@@ -9,49 +9,41 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background-color: #d8b4fe; /* Fundo Lilás / Lavanda da imagem */
+      background-color: #f3e8ff; /* Fundo Lilás */
       color: #333;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
-    /* Topo / Cabeçalho Principal */
+    /* Rodapé do TOPO (Maior) */
     .header-top {
-      background-color: #5b21b6; /* Roxo Vibrante da imagem */
+      background-color: #2e1065; /* Roxo Escuro */
       color: #ffffff;
-      padding: 32px 24px 60px 24px; /* Espaço maior na parte inferior para sobreposição */
+      padding: 20px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .header-title-box h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
+    .header-top h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
     }
 
-    .header-title-box p {
-      font-size: 0.9rem;
-      color: #ddd6fe;
-      margin-top: 4px;
-    }
-
-    /* Botão Estilo "Salvar Mês" da Imagem */
     .btn-salario {
-      background-color: #7c3aed;
+      background-color: #7c3aed; /* Roxo Botão */
       color: #ffffff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 12px;
+      padding: 8px 14px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      font-size: 0.85rem;
+      font-weight: 500;
       transition: background-color 0.2s;
     }
 
@@ -59,245 +51,239 @@
       background-color: #6d28d9;
     }
 
-    /* Container do Conteúdo com Efeito de Card Flutuante */
-    .main-wrapper {
-      flex: 1;
+    /* Container Principal */
+    .container {
+      max-width: 1200px;
+      margin: 24px auto;
       padding: 0 16px;
-      margin-top: -30px; /* Faz o cartão branco subir por cima do cabeçalho roxo */
-    }
-
-    .container-card {
-      max-width: 1000px;
-      margin: 0 auto 30px auto;
-      background-color: #ffffff;
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      width: 100%;
     }
 
     /* Grid dos 4 Blocos Superiores */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
 
     .card {
-      background-color: #fcfaff;
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid #f3e8ff;
+      background-color: #ffffff;
+      padding: 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9d5ff;
     }
 
     .card span {
       display: block;
       font-size: 0.85rem;
       color: #6b21a8;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 600;
     }
 
     .card .value {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      color: #3b0764;
+      color: #2e1065;
     }
 
     .card.highlight .value {
       color: #16a34a;
     }
 
-    /* Seções Empilhadas */
+    /* Estilo das 4 Grandes Seções Empilhadas */
     .sections-container {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
 
     .section-box {
-      background-color: #fcfaff;
-      border-radius: 14px;
-      padding: 18px 20px;
-      border: 1px solid #f3e8ff;
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px 24px;
+      border: 1px solid #e9d5ff;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #f3e8ff;
-      padding-bottom: 10px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #f3e8ff;
+      padding-bottom: 12px;
     }
 
     .section-info h2 {
-      font-size: 1.1rem;
-      color: #3b0764;
+      font-size: 1.2rem;
+      color: #2e1065;
     }
 
     .section-info .total {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #7c3aed;
-      margin-top: 2px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #6b21a8;
+      margin-top: 4px;
     }
 
     .btn-add {
       background-color: #7c3aed;
       color: white;
       border: none;
-      padding: 8px 14px;
-      border-radius: 10px;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 0.85rem;
       font-weight: 600;
+      transition: background-color 0.2s;
     }
 
     .btn-add:hover {
       background-color: #6d28d9;
     }
 
-    /* Listagem de Itens */
+    /* Lista de Itens Adicionados */
     .items-list {
       list-style: none;
+      margin-top: 12px;
     }
 
     .item-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
-      background-color: #ffffff;
+      padding: 10px 12px;
+      background-color: #faf5ff;
       border: 1px solid #f3e8ff;
-      border-radius: 8px;
-      margin-bottom: 6px;
+      border-radius: 6px;
+      margin-bottom: 8px;
     }
 
     .item-info {
-      font-size: 0.9rem;
-      color: #4b5563;
+      font-size: 0.95rem;
+      color: #334155;
     }
 
     .item-valor {
       font-weight: 600;
-      color: #6b21a8;
+      color: #2e1065;
     }
 
     .btn-delete {
       background: none;
       border: none;
-      color: #ef4444;
+      color: #dc2626;
       cursor: pointer;
       font-weight: bold;
       margin-left: 12px;
+      font-size: 0.9rem;
     }
 
-    /* Rodapé Inferior */
+    /* Rodapé INFERIOR (Menor) */
     .footer-bottom {
-      background-color: #3b0764; /* Roxo bem escuro na base */
-      color: #ddd6fe;
-      padding: 12px 24px;
+      background-color: #1e1b4b; /* Roxo Mais Escuro */
+      color: #c4b5fd;
+      padding: 8px 24px;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Cabeçalho Roxo Estilo Imagem -->
+  <!-- Rodapé Superior (Maior) -->
   <header class="header-top">
-    <div class="header-title-box">
-      <h1>Gestão Financeira</h1>
-      <p>Veja o saldo e controle seus gastos</p>
-    </div>
+    <h1>Gestão Financeira</h1>
     <button class="btn-salario" onclick="alterarSalario()">Alterar Salário</button>
   </header>
 
-  <!-- Container Principal Flutuante -->
-  <div class="main-wrapper">
-    <main class="container-card">
+  <!-- Conteúdo dos Blocos -->
+  <main class="container">
+    
+    <!-- 4 Blocos Superiores -->
+    <div class="cards-grid">
+      <div class="card highlight">
+        <span>Salário</span>
+        <div class="value" id="val-salario">R$ 0,00</div>
+      </div>
+
+      <div class="card highlight">
+        <span>Saldo Atual</span>
+        <div class="value" id="val-saldo">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <span>Contas a Pagar</span>
+        <div class="value" id="val-contas">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <span>Compras Realizadas</span>
+        <div class="value" id="val-compras">R$ 0,00</div>
+      </div>
+    </div>
+
+    <!-- 4 Seções Grandes Empilhadas -->
+    <div class="sections-container">
       
-      <!-- 4 Blocos Superiores -->
-      <div class="cards-grid">
-        <div class="card highlight">
-          <span>Salário</span>
-          <div class="value" id="val-salario">R$ 0,00</div>
+      <!-- Seção 1: Contas a Pagar -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Contas a Pagar</h2>
+            <div class="total" id="total-contas">Soma dos valores: R$ 0,00</div>
+          </div>
+          <button class="btn-add" onclick="adicionarItem('contas')">+ Adicionar Conta</button>
         </div>
-
-        <div class="card highlight">
-          <span>Saldo Atual</span>
-          <div class="value" id="val-saldo">R$ 0,00</div>
-        </div>
-
-        <div class="card">
-          <span>Contas a Pagar</span>
-          <div class="value" id="val-contas">R$ 0,00</div>
-        </div>
-
-        <div class="card">
-          <span>Compras Realizadas</span>
-          <div class="value" id="val-compras">R$ 0,00</div>
-        </div>
+        <ul class="items-list" id="list-contas"></ul>
       </div>
 
-      <!-- 4 Seções Grandes Empilhadas -->
-      <div class="sections-container">
-        
-        <!-- Contas a Pagar -->
-        <div class="section-box">
-          <div class="section-header">
-            <div class="section-info">
-              <h2>Contas a Pagar</h2>
-              <div class="total" id="total-contas">Soma: R$ 0,00</div>
-            </div>
-            <button class="btn-add" onclick="adicionarItem('contas')">+ Adicionar</button>
+      <!-- Seção 2: Compras Realizadas -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Compras Realizadas</h2>
+            <div class="total" id="total-compras">Soma dos valores: R$ 0,00</div>
           </div>
-          <ul class="items-list" id="list-contas"></ul>
+          <button class="btn-add" onclick="adicionarItem('compras')">+ Adicionar Compra</button>
         </div>
-
-        <!-- Compras Realizadas -->
-        <div class="section-box">
-          <div class="section-header">
-            <div class="section-info">
-              <h2>Compras Realizadas</h2>
-              <div class="total" id="total-compras">Soma: R$ 0,00</div>
-            </div>
-            <button class="btn-add" onclick="adicionarItem('compras')">+ Adicionar</button>
-          </div>
-          <ul class="items-list" id="list-compras"></ul>
-        </div>
-
-        <!-- Devolver na Caixinha -->
-        <div class="section-box">
-          <div class="section-header">
-            <div class="section-info">
-              <h2>Devolver na Caixinha</h2>
-              <div class="total" id="total-caixinha">Soma: R$ 0,00</div>
-            </div>
-            <button class="btn-add" onclick="adicionarItem('caixinha')">+ Adicionar</button>
-          </div>
-          <ul class="items-list" id="list-caixinha"></ul>
-        </div>
-
-        <!-- Guardar Dinheiro -->
-        <div class="section-box">
-          <div class="section-header">
-            <div class="section-info">
-              <h2>Guardar Dinheiro</h2>
-              <div class="total" id="total-guardar">Soma: R$ 0,00</div>
-            </div>
-            <button class="btn-add" onclick="adicionarItem('guardar')">+ Adicionar</button>
-          </div>
-          <ul class="items-list" id="list-guardar"></ul>
-        </div>
-
+        <ul class="items-list" id="list-compras"></ul>
       </div>
 
-    </main>
-  </div>
+      <!-- Seção 3: Devolver na Caixinha -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Devolver na Caixinha</h2>
+            <div class="total" id="total-caixinha">Soma dos valores: R$ 0,00</div>
+          </div>
+          <button class="btn-add" onclick="adicionarItem('caixinha')">+ Adicionar Devolução</button>
+        </div>
+        <ul class="items-list" id="list-caixinha"></ul>
+      </div>
 
-  <!-- Rodapé Inferior -->
+      <!-- Seção 4: Guardar Dinheiro -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Guardar Dinheiro</h2>
+            <div class="total" id="total-guardar">Soma dos valores: R$ 0,00</div>
+          </div>
+          <button class="btn-add" onclick="adicionarItem('guardar')">+ Adicionar Valor</button>
+        </div>
+        <ul class="items-list" id="list-guardar"></ul>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Rodapé Inferior (Menor) -->
   <footer class="footer-bottom">
     <span>&copy; Todos os direitos reservados.</span>
   </footer>
@@ -305,6 +291,7 @@
   <script>
     let salarioAtual = 0;
 
+    // Estrutura de dados para armazenar os itens
     const dados = {
       contas: [],
       compras: [],
@@ -376,7 +363,7 @@
       });
 
       const totalCategoria = calcularSomaCategoria(categoria);
-      document.getElementById(`total-${categoria}`).innerText = `Soma: ${formatarMoeda(totalCategoria)}`;
+      document.getElementById(`total-${categoria}`).innerText = `Soma dos valores: ${formatarMoeda(totalCategoria)}`;
 
       atualizarSaldoEGerais();
     }
@@ -387,18 +374,21 @@
       const somaCaixinha = calcularSomaCategoria('caixinha');
       const somaGuardar = calcularSomaCategoria('guardar');
 
+      // Atualiza os blocos da grade superior
       document.getElementById('val-contas').innerText = formatarMoeda(somaContas);
       document.getElementById('val-compras').innerText = formatarMoeda(somaCompras);
 
+      // Cálculo do Saldo Atual:
+      // Salário + Caixinha Devolvida - Contas - Compras - Guardar Dinheiro
       const saldoAtual = salarioAtual + somaCaixinha - somaContas - somaCompras - somaGuardar;
       
       const saldoElemento = document.getElementById('val-saldo');
       saldoElemento.innerText = formatarMoeda(saldoAtual);
 
       if (saldoAtual < 0) {
-        saldoElemento.style.color = "#dc2626";
+        saldoElemento.style.color = "#dc2626"; // Vermelho se estiver negativo
       } else {
-        saldoElemento.style.color = "#16a34a";
+        saldoElemento.style.color = "#16a34a"; // Verde se estiver positivo
       }
     }
   </script>
