@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão Financeira</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    /* Cabeçalho Principal (Cima) */
+    .header-top {
+      background-color: #1e293b;
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-top h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .btn-salario {
+      background-color: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    .btn-salario:hover {
+      background-color: #1d4ed8;
+    }
+
+    /* Cabeçalho Secundário (Baixo) */
+    .header-sub {
+      background-color: #0f172a;
+      color: #94a3b8;
+      padding: 8px 24px;
+      font-size: 0.8rem;
+    }
+
+    /* Container Principal */
+    .container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    /* Grid dos 4 Blocos */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    /* Estilo Individual dos Blocos */
+    .card {
+      background-color: #ffffff;
+      padding: 18px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+
+    .card span {
+      display: block;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .card .value {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .card.highlight .value {
+      color: #16a34a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho Principal (Topo) -->
+  <header class="header-top">
+    <h1>Gestão Financeira</h1>
+    <button class="btn-salario" onclick="alterarSalario()">Alterar Salário</button>
+  </header>
+
+  <!-- Cabeçalho Secundário (Abaixo do principal) -->
+  <header class="header-sub">
+    <span>Painel Principal</span>
+  </header>
+
+  <!-- Conteúdo dos Blocos -->
+  <main class="container">
+    <div class="cards-grid">
+      
+      <div class="card highlight">
+        <span>Salário</span>
+        <div class="value" id="val-salario">R$ 0,00</div>
+      </div>
+
+      <div class="card highlight">
+        <span>Saldo Atual</span>
+        <div class="value" id="val-saldo">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <span>Contas a Pagar</span>
+        <div class="value" id="val-contas">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <span>Compras Realizadas</span>
+        <div class="value" id="val-compras">R$ 0,00</div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let salarioAtual = 0;
+
+    function formatarMoeda(valor) {
+      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function alterarSalario() {
+      const entrada = prompt("Digite o novo valor do salário (ex: 2500):");
+      
+      if (entrada !== null && entrada.trim() !== "") {
+        const valorNumerico = parseFloat(entrada.replace(',', '.'));
+        
+        if (!isNaN(valorNumerico) && valorNumerico >= 0) {
+          salarioAtual = valorNumerico;
+          
+          // Atualiza os cards na tela
+          document.getElementById('val-salario').innerText = formatarMoeda(salarioAtual);
+          document.getElementById('val-saldo').innerText = formatarMoeda(salarioAtual);
+        } else {
+          alert("Por favor, digite um número válido.");
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
