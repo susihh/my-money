@@ -24,7 +24,7 @@
     .header-top {
       background-color: #2e1065; /* Roxo Escuro */
       color: #ffffff;
-      padding: 20px 24px; /* Mais alto */
+      padding: 20px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -56,18 +56,18 @@
       max-width: 1200px;
       margin: 24px auto;
       padding: 0 16px;
-      flex: 1; /* Garante que o rodapé inferior fique no final da tela */
+      flex: 1;
       width: 100%;
     }
 
-    /* Grid dos 4 Blocos */
+    /* Grid dos 4 Blocos Superiores */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 16px;
+      margin-bottom: 32px;
     }
 
-    /* Estilo Individual dos Blocos */
     .card {
       background-color: #ffffff;
       padding: 18px;
@@ -94,13 +94,103 @@
       color: #16a34a;
     }
 
+    /* Estilo das 4 Grandes Seções Empilhadas */
+    .sections-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section-box {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px 24px;
+      border: 1px solid #e9d5ff;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #f3e8ff;
+      padding-bottom: 12px;
+    }
+
+    .section-info h2 {
+      font-size: 1.2rem;
+      color: #2e1065;
+    }
+
+    .section-info .total {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #6b21a8;
+      margin-top: 4px;
+    }
+
+    .btn-add {
+      background-color: #7c3aed;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+
+    .btn-add:hover {
+      background-color: #6d28d9;
+    }
+
+    /* Lista de Itens Adicionados */
+    .items-list {
+      list-style: none;
+      margin-top: 12px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background-color: #faf5ff;
+      border: 1px solid #f3e8ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .item-info {
+      font-size: 0.95rem;
+      color: #334155;
+    }
+
+    .item-valor {
+      font-weight: 600;
+      color: #2e1065;
+    }
+
+    .btn-delete {
+      background: none;
+      border: none;
+      color: #dc2626;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 12px;
+      font-size: 0.9rem;
+    }
+
     /* Rodapé INFERIOR (Menor) */
     .footer-bottom {
       background-color: #1e1b4b; /* Roxo Mais Escuro */
       color: #c4b5fd;
-      padding: 8px 24px; /* Menor que o do topo */
+      padding: 8px 24px;
       text-align: center;
       font-size: 0.75rem;
+      margin-top: 40px;
     }
   </style>
 </head>
@@ -114,8 +204,9 @@
 
   <!-- Conteúdo dos Blocos -->
   <main class="container">
+    
+    <!-- 4 Blocos Superiores -->
     <div class="cards-grid">
-      
       <div class="card highlight">
         <span>Salário</span>
         <div class="value" id="val-salario">R$ 0,00</div>
@@ -135,8 +226,61 @@
         <span>Compras Realizadas</span>
         <div class="value" id="val-compras">R$ 0,00</div>
       </div>
+    </div>
+
+    <!-- 4 Seções Grandes Empilhadas -->
+    <div class="sections-container">
+      
+      <!-- Seção 1: Contas a Pagar -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Contas a Pagar</h2>
+            <div class="total" id="total-contas">Soma dos valores: R$ 0,00</div>
+          </div>
+          <button class="btn-add" onclick="adicionarItem('contas')">+ Adicionar Conta</button>
+        </div>
+        <ul class="items-list" id="list-contas"></ul>
+      </div>
+
+      <!-- Seção 2: Compras Realizadas -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Compras Realizadas</h2>
+            <div class="total" id="total-compras">Soma dos valores: R$ 0,00</div>
+          </div>
+          <button class="btn-add" onclick="adicionarItem('compras')">+ Adicionar Compra</button>
+        </div>
+        <ul class="items-list" id="list-compras"></ul>
+      </div>
+
+      <!-- Seção 3: Devolver na Caixinha -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Devolver na Caixinha</h2>
+            <div class="total" id="total-caixinha">Soma dos valores: R$ 0,00</div>
+          </div>
+          <button class="btn-add" onclick="adicionarItem('caixinha')">+ Adicionar Devolução</button>
+        </div>
+        <ul class="items-list" id="list-caixinha"></ul>
+      </div>
+
+      <!-- Seção 4: Guardar Dinheiro -->
+      <div class="section-box">
+        <div class="section-header">
+          <div class="section-info">
+            <h2>Guardar Dinheiro</h2>
+            <div class="total" id="total-guardar">Soma dos valores: R$ 0,00</div>
+          </div>
+          <button class="btn-add" onclick="adicionarItem('guardar')">+ Adicionar Valor</button>
+        </div>
+        <ul class="items-list" id="list-guardar"></ul>
+      </div>
 
     </div>
+
   </main>
 
   <!-- Rodapé Inferior (Menor) -->
@@ -146,6 +290,14 @@
 
   <script>
     let salarioAtual = 0;
+
+    // Estrutura de dados para armazenar os itens
+    const dados = {
+      contas: [],
+      compras: [],
+      caixinha: [],
+      guardar: []
+    };
 
     function formatarMoeda(valor) {
       return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -159,13 +311,84 @@
         
         if (!isNaN(valorNumerico) && valorNumerico >= 0) {
           salarioAtual = valorNumerico;
-          
-          // Atualiza os cards na tela
           document.getElementById('val-salario').innerText = formatarMoeda(salarioAtual);
-          document.getElementById('val-saldo').innerText = formatarMoeda(salarioAtual);
+          atualizarSaldoEGerais();
         } else {
           alert("Por favor, digite um número válido.");
         }
+      }
+    }
+
+    function adicionarItem(categoria) {
+      const nome = prompt("Descrição do item:");
+      if (!nome) return;
+
+      const valorEntrada = prompt("Valor do item (ex: 150.50):");
+      if (!valorEntrada) return;
+
+      const valorNumerico = parseFloat(valorEntrada.replace(',', '.'));
+      if (isNaN(valorNumerico) || valorNumerico <= 0) {
+        alert("Valor inválido!");
+        return;
+      }
+
+      dados[categoria].push({ nome, valor: valorNumerico });
+      atualizarInterface(categoria);
+    }
+
+    function removerItem(categoria, index) {
+      dados[categoria].splice(index, 1);
+      atualizarInterface(categoria);
+    }
+
+    function calcularSomaCategoria(categoria) {
+      return dados[categoria].reduce((acc, item) => acc + item.valor, 0);
+    }
+
+    function atualizarInterface(categoria) {
+      const listaElemento = document.getElementById(`list-${categoria}`);
+      listaElemento.innerHTML = "";
+
+      dados[categoria].forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'item-row';
+        li.innerHTML = `
+          <span class="item-info">${item.nome}</span>
+          <div>
+            <span class="item-valor">${formatarMoeda(item.valor)}</span>
+            <button class="btn-delete" onclick="removerItem('${categoria}', ${index})">✕</button>
+          </div>
+        `;
+        listaElemento.appendChild(li);
+      });
+
+      const totalCategoria = calcularSomaCategoria(categoria);
+      document.getElementById(`total-${categoria}`).innerText = `Soma dos valores: ${formatarMoeda(totalCategoria)}`;
+
+      atualizarSaldoEGerais();
+    }
+
+    function atualizarSaldoEGerais() {
+      const somaContas = calcularSomaCategoria('contas');
+      const somaCompras = calcularSomaCategoria('compras');
+      const somaCaixinha = calcularSomaCategoria('caixinha');
+      const somaGuardar = calcularSomaCategoria('guardar');
+
+      // Atualiza os blocos da grade superior
+      document.getElementById('val-contas').innerText = formatarMoeda(somaContas);
+      document.getElementById('val-compras').innerText = formatarMoeda(somaCompras);
+
+      // Cálculo do Saldo Atual:
+      // Salário + Caixinha Devolvida - Contas - Compras - Guardar Dinheiro
+      const saldoAtual = salarioAtual + somaCaixinha - somaContas - somaCompras - somaGuardar;
+      
+      const saldoElemento = document.getElementById('val-saldo');
+      saldoElemento.innerText = formatarMoeda(saldoAtual);
+
+      if (saldoAtual < 0) {
+        saldoElemento.style.color = "#dc2626"; // Vermelho se estiver negativo
+      } else {
+        saldoElemento.style.color = "#16a34a"; // Verde se estiver positivo
       }
     }
   </script>
