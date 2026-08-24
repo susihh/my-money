@@ -5,393 +5,711 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestão Financeira</title>
   <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-sizing: border-box;
     }
 
     body {
-      background-color: #f3e8ff; /* Fundo Lilás */
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 2rem;
     }
 
-    /* Rodapé do TOPO (Maior) */
-    .header-top {
-      background-color: #2e1065; /* Roxo Escuro */
-      color: #ffffff;
-      padding: 20px 24px;
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1.2rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .header-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
     }
 
-    .header-top h1 {
-      font-size: 1.4rem;
-      font-weight: 600;
+    .header-content h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
     }
 
-    .btn-salario {
-      background-color: #7c3aed; /* Roxo Botão */
-      color: #ffffff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: background-color 0.2s;
-    }
-
-    .btn-salario:hover {
-      background-color: #6d28d9;
-    }
-
-    /* Container Principal */
     .container {
-      max-width: 1200px;
-      margin: 24px auto;
-      padding: 0 16px;
-      flex: 1;
-      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
     }
 
-    /* Grid dos 4 Blocos Superiores */
-    .cards-grid {
+    .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .card {
-      background-color: #ffffff;
-      padding: 18px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e9d5ff;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+      transition: transform 0.2s;
     }
 
-    .card span {
-      display: block;
-      font-size: 0.85rem;
-      color: #6b21a8;
-      margin-bottom: 8px;
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .summary-card h3 {
+      font-size: 0.95rem;
       font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
     }
 
-    .card .value {
-      font-size: 1.35rem;
+    .summary-card .value {
+      font-size: 1.6rem;
       font-weight: 700;
-      color: #2e1065;
     }
 
-    .card.highlight .value {
-      color: #16a34a;
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
     }
 
-    /* Estilo das 4 Grandes Seções Empilhadas */
-    .sections-container {
+    .category-card {
       display: flex;
       flex-direction: column;
-      gap: 24px;
     }
 
-    .section-box {
-      background-color: #ffffff;
-      border-radius: 10px;
-      padding: 20px 24px;
-      border: 1px solid #e9d5ff;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-
-    .section-header {
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      border-bottom: 2px solid #f3e8ff;
-      padding-bottom: 12px;
+      margin-bottom: 0.75rem;
     }
 
-    .section-info h2 {
+    .card-header h2 {
       font-size: 1.2rem;
-      color: #2e1065;
+      font-weight: 700;
     }
 
-    .section-info .total {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #6b21a8;
-      margin-top: 4px;
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
     }
 
     .btn-add {
-      background-color: #7c3aed;
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 8px 16px;
+      padding: 0.4rem 0.9rem;
       border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
       font-weight: 600;
-      transition: background-color 0.2s;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
     .btn-add:hover {
-      background-color: #6d28d9;
+      background: var(--primary-dark);
     }
 
-    /* Lista de Itens Adicionados */
-    .items-list {
+    .item-list {
       list-style: none;
-      margin-top: 12px;
+      flex: 1;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-bottom: 0.75rem;
     }
 
-    .item-row {
+    .item-list .empty {
+      color: var(--text-secondary);
+      font-style: italic;
+      padding: 0.5rem 0;
+    }
+
+    .item {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 10px 12px;
-      background-color: #faf5ff;
-      border: 1px solid #f3e8ff;
-      border-radius: 6px;
-      margin-bottom: 8px;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
     }
 
-    .item-info {
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item-desc {
+      flex: 1;
       font-size: 0.95rem;
-      color: #334155;
+      color: var(--text);
+      word-break: break-word;
     }
 
     .item-valor {
       font-weight: 600;
-      color: #2e1065;
+      white-space: nowrap;
     }
 
     .btn-delete {
-      background: none;
+      background: transparent;
       border: none;
-      color: #dc2626;
+      color: var(--danger);
       cursor: pointer;
-      font-weight: bold;
-      margin-left: 12px;
+      font-size: 1rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .btn-delete:hover {
+      background: #fee2e2;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .formula-note {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--text-secondary);
       font-size: 0.9rem;
     }
 
-    /* Rodapé INFERIOR (Menor) */
-    .footer-bottom {
-      background-color: #1e1b4b; /* Roxo Mais Escuro */
-      color: #c4b5fd;
-      padding: 8px 24px;
-      text-align: center;
-      font-size: 0.75rem;
-      margin-top: 40px;
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-cancel {
+      background: #e2e8f0;
+      color: var(--text-secondary);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background: #cbd5e1;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .categories-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card .value {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
 <body>
-
-  <!-- Rodapé Superior (Maior) -->
-  <header class="header-top">
-    <h1>Gestão Financeira</h1>
-    <button class="btn-salario" onclick="alterarSalario()">Alterar Salário</button>
+  <header>
+    <div class="header-content">
+      <h1>💰 Gestão Financeira</h1>
+      <button class="btn-primary" id="btnAlterarSalario">Alterar Salário</button>
+    </div>
   </header>
 
-  <!-- Conteúdo dos Blocos -->
   <main class="container">
-    
-    <!-- 4 Blocos Superiores -->
-    <div class="cards-grid">
-      <div class="card highlight">
-        <span>Salário</span>
-        <div class="value" id="val-salario">R$ 0,00</div>
+    <!-- Cartões de resumo -->
+    <section class="summary-grid">
+      <div class="card summary-card">
+        <h3>Salário</h3>
+        <p class="value" id="salarioValor">R$ 0,00</p>
       </div>
-
-      <div class="card highlight">
-        <span>Saldo Atual</span>
-        <div class="value" id="val-saldo">R$ 0,00</div>
+      <div class="card summary-card">
+        <h3>Saldo Atual</h3>
+        <p class="value" id="saldoValor">R$ 0,00</p>
       </div>
-
-      <div class="card">
-        <span>Contas a Pagar</span>
-        <div class="value" id="val-contas">R$ 0,00</div>
+      <div class="card summary-card">
+        <h3>Contas a Pagar</h3>
+        <p class="value" id="contasTotalTopo">R$ 0,00</p>
       </div>
-
-      <div class="card">
-        <span>Compras Realizadas</span>
-        <div class="value" id="val-compras">R$ 0,00</div>
+      <div class="card summary-card">
+        <h3>Compras Realizadas</h3>
+        <p class="value" id="comprasTotalTopo">R$ 0,00</p>
       </div>
-    </div>
+    </section>
 
-    <!-- 4 Seções Grandes Empilhadas -->
-    <div class="sections-container">
-      
-      <!-- Seção 1: Contas a Pagar -->
-      <div class="section-box">
-        <div class="section-header">
-          <div class="section-info">
-            <h2>Contas a Pagar</h2>
-            <div class="total" id="total-contas">Soma dos valores: R$ 0,00</div>
-          </div>
-          <button class="btn-add" onclick="adicionarItem('contas')">+ Adicionar Conta</button>
+    <!-- Categorias -->
+    <section class="categories-grid">
+      <!-- Contas a Pagar -->
+      <div class="card category-card">
+        <div class="card-header">
+          <h2>Contas a Pagar</h2>
+          <button class="btn-add" data-category="contas">+ Adicionar Conta</button>
         </div>
-        <ul class="items-list" id="list-contas"></ul>
-      </div>
-
-      <!-- Seção 2: Compras Realizadas -->
-      <div class="section-box">
-        <div class="section-header">
-          <div class="section-info">
-            <h2>Compras Realizadas</h2>
-            <div class="total" id="total-compras">Soma dos valores: R$ 0,00</div>
-          </div>
-          <button class="btn-add" onclick="adicionarItem('compras')">+ Adicionar Compra</button>
+        <ul class="item-list" id="listaContas"></ul>
+        <div class="card-footer">
+          <span>Soma dos valores:</span>
+          <strong id="totalContas">R$ 0,00</strong>
         </div>
-        <ul class="items-list" id="list-compras"></ul>
       </div>
 
-      <!-- Seção 3: Devolver na Caixinha -->
-      <div class="section-box">
-        <div class="section-header">
-          <div class="section-info">
-            <h2>Devolver na Caixinha</h2>
-            <div class="total" id="total-caixinha">Soma dos valores: R$ 0,00</div>
-          </div>
-          <button class="btn-add" onclick="adicionarItem('caixinha')">+ Adicionar Devolução</button>
+      <!-- Compras Realizadas -->
+      <div class="card category-card">
+        <div class="card-header">
+          <h2>Compras Realizadas</h2>
+          <button class="btn-add" data-category="compras">+ Adicionar Compra</button>
         </div>
-        <ul class="items-list" id="list-caixinha"></ul>
-      </div>
-
-      <!-- Seção 4: Guardar Dinheiro -->
-      <div class="section-box">
-        <div class="section-header">
-          <div class="section-info">
-            <h2>Guardar Dinheiro</h2>
-            <div class="total" id="total-guardar">Soma dos valores: R$ 0,00</div>
-          </div>
-          <button class="btn-add" onclick="adicionarItem('guardar')">+ Adicionar Valor</button>
+        <ul class="item-list" id="listaCompras"></ul>
+        <div class="card-footer">
+          <span>Soma dos valores:</span>
+          <strong id="totalCompras">R$ 0,00</strong>
         </div>
-        <ul class="items-list" id="list-guardar"></ul>
       </div>
 
-    </div>
+      <!-- Devolver na Caixinha -->
+      <div class="card category-card">
+        <div class="card-header">
+          <h2>Devolver na Caixinha</h2>
+          <button class="btn-add" data-category="devolucoes">+ Adicionar Devolução</button>
+        </div>
+        <ul class="item-list" id="listaDevolucoes"></ul>
+        <div class="card-footer">
+          <span>Soma dos valores:</span>
+          <strong id="totalDevolucoes">R$ 0,00</strong>
+        </div>
+      </div>
 
+      <!-- Guardar Dinheiro -->
+      <div class="card category-card">
+        <div class="card-header">
+          <h2>Guardar Dinheiro</h2>
+          <button class="btn-add" data-category="guardados">+ Adicionar Valor</button>
+        </div>
+        <ul class="item-list" id="listaGuardados"></ul>
+        <div class="card-footer">
+          <span>Soma dos valores:</span>
+          <strong id="totalGuardados">R$ 0,00</strong>
+        </div>
+      </div>
+    </section>
+
+    <p class="formula-note">Saldo Atual = Salário − (Contas a Pagar + Compras + Devoluções + Guardado)</p>
   </main>
 
-  <!-- Rodapé Inferior (Menor) -->
-  <footer class="footer-bottom">
-    <span>&copy; Todos os direitos reservados.</span>
-  </footer>
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitulo">Adicionar</h2>
+        <button class="modal-close" id="btnFecharModal">&times;</button>
+      </div>
+      <form id="formModal">
+        <div class="form-group" id="campoDescricao">
+          <label for="inputDescricao">Descrição</label>
+          <input type="text" id="inputDescricao" placeholder="Ex: Aluguel" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="inputValor">Valor (R$)</label>
+          <input type="text" id="inputValor" inputmode="decimal" placeholder="0,00" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="btnCancelarModal">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script>
-    let salarioAtual = 0;
+    (function() {
+      const STORAGE_KEY = 'gestaoFinanceiraData';
 
-    // Estrutura de dados para armazenar os itens
-    const dados = {
-      contas: [],
-      compras: [],
-      caixinha: [],
-      guardar: []
-    };
+      const DEFAULT_STATE = {
+        salario: 0,
+        contas: [],       // Contas a Pagar
+        compras: [],      // Compras Realizadas
+        devolucoes: [],   // Devolver na Caixinha
+        guardados: []     // Guardar Dinheiro
+      };
 
-    function formatarMoeda(valor) {
-      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
+      let state = loadState();
+      let modalMode = null;      // 'salario' ou 'item'
+      let modalCategory = null;  // chave da categoria
 
-    function alterarSalario() {
-      const entrada = prompt("Digite o novo valor do salário (ex: 2500):");
-      
-      if (entrada !== null && entrada.trim() !== "") {
-        const valorNumerico = parseFloat(entrada.replace(',', '.'));
-        
-        if (!isNaN(valorNumerico) && valorNumerico >= 0) {
-          salarioAtual = valorNumerico;
-          document.getElementById('val-salario').innerText = formatarMoeda(salarioAtual);
-          atualizarSaldoEGerais();
-        } else {
-          alert("Por favor, digite um número válido.");
+      // ---------- Persistência ----------
+      function loadState() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            return { ...DEFAULT_STATE, ...parsed };
+          }
+        } catch (e) {
+          console.error('Erro ao carregar dados:', e);
+        }
+        return { ...DEFAULT_STATE };
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          console.error('Erro ao salvar dados:', e);
         }
       }
-    }
 
-    function adicionarItem(categoria) {
-      const nome = prompt("Descrição do item:");
-      if (!nome) return;
-
-      const valorEntrada = prompt("Valor do item (ex: 150.50):");
-      if (!valorEntrada) return;
-
-      const valorNumerico = parseFloat(valorEntrada.replace(',', '.'));
-      if (isNaN(valorNumerico) || valorNumerico <= 0) {
-        alert("Valor inválido!");
-        return;
+      // ---------- Utilidades ----------
+      function formatCurrency(value) {
+        return new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(value || 0);
       }
 
-      dados[categoria].push({ nome, valor: valorNumerico });
-      atualizarInterface(categoria);
-    }
+      function parseCurrency(input) {
+        if (!input) return 0;
+        let cleaned = String(input).replace(/[R$\s]/g, '');
+        // Trata "1.234,56" -> 1234.56
+        if (cleaned.includes(',') && cleaned.includes('.')) {
+          cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+        } else if (cleaned.includes(',')) {
+          cleaned = cleaned.replace(',', '.');
+        }
+        cleaned = cleaned.replace(/[^\d.-]/g, '');
+        const val = parseFloat(cleaned);
+        return isNaN(val) ? 0 : val;
+      }
 
-    function removerItem(categoria, index) {
-      dados[categoria].splice(index, 1);
-      atualizarInterface(categoria);
-    }
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
 
-    function calcularSomaCategoria(categoria) {
-      return dados[categoria].reduce((acc, item) => acc + item.valor, 0);
-    }
+      function getTotals() {
+        const sum = arr => arr.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+        const totalContas = sum(state.contas);
+        const totalCompras = sum(state.compras);
+        const totalDevolucoes = sum(state.devolucoes);
+        const totalGuardados = sum(state.guardados);
+        const totalSaidas = totalContas + totalCompras + totalDevolucoes + totalGuardados;
+        const saldoAtual = (Number(state.salario) || 0) - totalSaidas;
 
-    function atualizarInterface(categoria) {
-      const listaElemento = document.getElementById(`list-${categoria}`);
-      listaElemento.innerHTML = "";
+        return {
+          totalContas,
+          totalCompras,
+          totalDevolucoes,
+          totalGuardados,
+          totalSaidas,
+          saldoAtual
+        };
+      }
 
-      dados[categoria].forEach((item, index) => {
-        const li = document.createElement('li');
-        li.className = 'item-row';
-        li.innerHTML = `
-          <span class="item-info">${item.nome}</span>
-          <div>
-            <span class="item-valor">${formatarMoeda(item.valor)}</span>
-            <button class="btn-delete" onclick="removerItem('${categoria}', ${index})">✕</button>
-          </div>
-        `;
-        listaElemento.appendChild(li);
+      // ---------- Renderização ----------
+      function renderizarCategoria(categoryKey, items, listId, emptyMessage) {
+        const ul = document.getElementById(listId);
+        ul.innerHTML = '';
+
+        if (items.length === 0) {
+          ul.innerHTML = `<li class="empty">${emptyMessage}</li>`;
+          return;
+        }
+
+        items.forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'item';
+          li.innerHTML = `
+            <span class="item-desc">${escapeHtml(item.descricao)}</span>
+            <span class="item-valor">${formatCurrency(item.valor)}</span>
+            <button class="btn-delete" data-category="${categoryKey}" data-id="${item.id}" title="Remover">✕</button>
+          `;
+          ul.appendChild(li);
+        });
+      }
+
+      function updateUI() {
+        const totals = getTotals();
+
+        // Resumo superior
+        document.getElementById('salarioValor').textContent = formatCurrency(state.salario);
+        document.getElementById('saldoValor').textContent = formatCurrency(totals.saldoAtual);
+        document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContas);
+        document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalCompras);
+
+        // Totais das seções
+        document.getElementById('totalContas').textContent = formatCurrency(totals.totalContas);
+        document.getElementById('totalCompras').textContent = formatCurrency(totals.totalCompras);
+        document.getElementById('totalDevolucoes').textContent = formatCurrency(totals.totalDevolucoes);
+        document.getElementById('totalGuardados').textContent = formatCurrency(totals.totalGuardados);
+
+        // Cor do saldo
+        const saldoEl = document.getElementById('saldoValor');
+        if (totals.saldoAtual < 0) {
+          saldoEl.style.color = 'var(--danger)';
+        } else {
+          saldoEl.style.color = 'var(--success)';
+        }
+
+        // Listas
+        renderizarCategoria('contas', state.contas, 'listaContas', 'Nenhuma conta a pagar.');
+        renderizarCategoria('compras', state.compras, 'listaCompras', 'Nenhuma compra realizada.');
+        renderizarCategoria('devolucoes', state.devolucoes, 'listaDevolucoes', 'Nenhuma devolução.');
+        renderizarCategoria('guardados', state.guardados, 'listaGuardados', 'Nenhum valor guardado.');
+      }
+
+      // ---------- Modal ----------
+      function openModal(mode, category = null) {
+        modalMode = mode;
+        modalCategory = category;
+
+        const overlay = document.getElementById('modalOverlay');
+        const title = document.getElementById('modalTitulo');
+        const campoDescricao = document.getElementById('campoDescricao');
+        const inputDescricao = document.getElementById('inputDescricao');
+        const inputValor = document.getElementById('inputValor');
+        const form = document.getElementById('formModal');
+
+        form.reset();
+
+        if (mode === 'salario') {
+          title.textContent = 'Alterar Salário';
+          campoDescricao.style.display = 'none';
+          // Pré-preenche com o salário atual formatado
+          inputValor.value = formatCurrency(state.salario).replace('R$', '').trim();
+          inputValor.placeholder = '0,00';
+          inputValor.focus();
+        } else {
+          const categoryLabels = {
+            contas: 'Adicionar Conta',
+            compras: 'Adicionar Compra',
+            devolucoes: 'Adicionar Devolução',
+            guardados: 'Adicionar Valor'
+          };
+          title.textContent = categoryLabels[category] || 'Adicionar';
+          campoDescricao.style.display = 'block';
+          inputDescricao.value = '';
+          inputValor.value = '';
+          inputValor.placeholder = '0,00';
+          inputDescricao.focus();
+        }
+
+        overlay.classList.add('active');
+      }
+
+      function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('active');
+        modalMode = null;
+        modalCategory = null;
+      }
+
+      // ---------- Eventos ----------
+      // Abrir modal de salário
+      document.getElementById('btnAlterarSalario').addEventListener('click', () => {
+        openModal('salario');
       });
 
-      const totalCategoria = calcularSomaCategoria(categoria);
-      document.getElementById(`total-${categoria}`).innerText = `Soma dos valores: ${formatarMoeda(totalCategoria)}`;
+      // Abrir modal de adição (delegação para os botões de categoria)
+      document.addEventListener('click', (e) => {
+        const btnAdd = e.target.closest('.btn-add');
+        if (btnAdd) {
+          const category = btnAdd.dataset.category;
+          openModal('item', category);
+        }
+      });
 
-      atualizarSaldoEGerais();
-    }
+      // Fechar modal
+      document.getElementById('btnFecharModal').addEventListener('click', closeModal);
+      document.getElementById('btnCancelarModal').addEventListener('click', closeModal);
+      document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeModal();
+      });
 
-    function atualizarSaldoEGerais() {
-      const somaContas = calcularSomaCategoria('contas');
-      const somaCompras = calcularSomaCategoria('compras');
-      const somaCaixinha = calcularSomaCategoria('caixinha');
-      const somaGuardar = calcularSomaCategoria('guardar');
+      // Deletar item (delegação)
+      document.addEventListener('click', (e) => {
+        const btnDelete = e.target.closest('.btn-delete');
+        if (btnDelete) {
+          const category = btnDelete.dataset.category;
+          const id = btnDelete.dataset.id;
+          if (confirm('Deseja remover este item?')) {
+            state[category] = state[category].filter(item => item.id !== id);
+            saveState();
+            updateUI();
+          }
+        }
+      });
 
-      // Atualiza os blocos da grade superior
-      document.getElementById('val-contas').innerText = formatarMoeda(somaContas);
-      document.getElementById('val-compras').innerText = formatarMoeda(somaCompras);
+      // Submit do modal
+      document.getElementById('formModal').addEventListener('submit', (e) => {
+        e.preventDefault();
 
-      // Cálculo do Saldo Atual:
-      // Salário + Caixinha Devolvida - Contas - Compras - Guardar Dinheiro
-      const saldoAtual = salarioAtual + somaCaixinha - somaContas - somaCompras - somaGuardar;
-      
-      const saldoElemento = document.getElementById('val-saldo');
-      saldoElemento.innerText = formatarMoeda(saldoAtual);
+        const inputValor = document.getElementById('inputValor').value;
+        const valor = parseCurrency(inputValor);
 
-      if (saldoAtual < 0) {
-        saldoElemento.style.color = "#dc2626"; // Vermelho se estiver negativo
-      } else {
-        saldoElemento.style.color = "#16a34a"; // Verde se estiver positivo
-      }
-    }
+        if (modalMode === 'salario') {
+          if (valor < 0) {
+            alert('Informe um valor válido para o salário.');
+            return;
+          }
+          state.salario = valor;
+        } else if (modalMode === 'item' && modalCategory) {
+          const inputDescricao = document.getElementById('inputDescricao').value.trim();
+          const descricao = inputDescricao || 'Sem descrição';
+
+          if (valor <= 0) {
+            alert('Informe um valor maior que zero.');
+            return;
+          }
+
+          const novoItem = {
+            id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
+            descricao,
+            valor
+          };
+
+          state[modalCategory].push(novoItem);
+        }
+
+        saveState();
+        updateUI();
+        closeModal();
+      });
+
+      // Inicialização
+      updateUI();
+    })();
   </script>
-
 </body>
 </html>
