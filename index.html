@@ -9,7 +9,7 @@
       --primary: #6b21a8;
       --primary-light: #7e22ce;
       --primary-bg: #f3e8ff;
-      --bg: #c084fc;
+      --bg: #f3e8ff; /* Lilás bem claro */
       --card-bg: #ffffff;
       --text: #1e1b4b;
       --text-secondary: #6b7280;
@@ -17,7 +17,7 @@
       --danger: #ef4444;
       --success: #16a34a;
       --radius: 24px;
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
     }
 
     * {
@@ -93,8 +93,8 @@
       padding: 1.5rem;
     }
 
-    /* Sobreposição do card sobre o cabeçalho roxo */
-    #pageHistory .container {
+    /* Sobreposição dos cards sobre o cabeçalho roxo nas duas páginas */
+    .container {
       margin-top: -3.5rem;
       position: relative;
       z-index: 10;
@@ -169,6 +169,21 @@
     }
 
     .btn-primary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-modal-save {
       background: var(--primary);
       color: white;
       border: none;
@@ -176,10 +191,9 @@
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
     }
 
-    .btn-primary:hover {
+    .btn-modal-save:hover {
       background: var(--primary-light);
     }
 
@@ -634,7 +648,7 @@
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-cancel" id="btnCancelarModal">Cancelar</button>
-          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="submit" class="btn-modal-save">Salvar</button>
         </div>
       </form>
     </div>
