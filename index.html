@@ -9,15 +9,15 @@
       --primary: #6b21a8;
       --primary-light: #7e22ce;
       --primary-bg: #f3e8ff;
-      --bg: #e9d5ff;
+      --bg: #c084fc;
       --card-bg: #ffffff;
       --text: #1e1b4b;
       --text-secondary: #6b7280;
       --border: #f3f4f6;
       --danger: #ef4444;
       --success: #16a34a;
-      --radius: 16px;
-      --shadow: 0 4px 12px rgba(0,0,0,0.05);
+      --radius: 24px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
 
     * {
@@ -37,7 +37,7 @@
     header {
       background: var(--primary);
       color: white;
-      padding: 2rem 0;
+      padding: 2.5rem 0 4.5rem 0;
     }
 
     .header-content {
@@ -93,6 +93,13 @@
       padding: 1.5rem;
     }
 
+    /* Sobreposição do card sobre o cabeçalho roxo */
+    #pageHistory .container {
+      margin-top: -3.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
     .page-section {
       display: none;
     }
@@ -112,7 +119,7 @@
       background: var(--card-bg);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 1.5rem;
+      padding: 1.75rem;
     }
 
     .summary-card h3 {
@@ -278,7 +285,7 @@
     }
 
     .history-subtitle {
-      color: var(--text-secondary);
+      color: #9ca3af;
       font-size: 0.9rem;
       margin-bottom: 1.5rem;
     }
@@ -288,7 +295,7 @@
       color: white;
       border: none;
       padding: 0.6rem 1.2rem;
-      border-radius: 10px;
+      border-radius: 12px;
       font-weight: 600;
       font-size: 0.9rem;
       cursor: pointer;
@@ -305,7 +312,7 @@
     .history-month-card {
       background: #fafafa;
       border: 1px solid #f3f4f6;
-      border-radius: 12px;
+      border-radius: 16px;
       margin-bottom: 1rem;
       overflow: hidden;
     }
@@ -777,7 +784,6 @@
         renderizarCategoria('guardados', state.guardados, 'listaGuardados', 'Nenhum valor guardado.');
       }
 
-      /* RENDERIZAÇÃO DO HISTÓRICO COM EXPANSÃO E VISUAL IGUAL À IMAGEM */
       function renderHistory() {
         const history = loadHistory();
         const container = document.getElementById('listaHistorico');
@@ -791,13 +797,6 @@
         history.forEach((entry, index) => {
           const card = document.createElement('div');
           card.className = 'history-month-card';
-
-          const categoryLabels = {
-            contas: 'Conta',
-            compras: 'Compra',
-            devolucoes: 'Devolução',
-            guardados: 'Guardado'
-          };
 
           let itemsHtml = '';
           const allItems = [
@@ -893,7 +892,6 @@
         alert('Mês salvo no histórico com sucesso!');
       });
 
-      /* Modal Helpers */
       function openModal(mode, category = null) {
         modalMode = mode;
         modalCategory = category;
