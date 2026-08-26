@@ -6,17 +6,18 @@
   <title>Gestão Financeira</title>
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-dark: #4338ca;
-      --bg: #f1f5f9;
+      --primary: #6b21a8;
+      --primary-light: #7e22ce;
+      --primary-bg: #f3e8ff;
+      --bg: #e9d5ff;
       --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-secondary: #475569;
-      --border: #e2e8f0;
-      --danger: #dc2626;
+      --text: #1e1b4b;
+      --text-secondary: #6b7280;
+      --border: #f3f4f6;
+      --danger: #ef4444;
       --success: #16a34a;
-      --radius: 12px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --radius: 16px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     * {
@@ -26,7 +27,7 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -36,39 +37,62 @@
     header {
       background: var(--primary);
       color: white;
-      padding: 2.5rem 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 2rem 0;
     }
 
     .header-content {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.8rem;
-    }
-
-    .header-content h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
+      gap: 1rem;
     }
 
     .header-title-group {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
+    }
+
+    .header-text h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .header-text p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-top: 0.2rem;
+    }
+
+    .btn-icon-circle {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .btn-icon-circle:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
 
     .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 1.5rem 1rem;
+      padding: 1.5rem;
     }
 
-    /* Alternância de Páginas */
     .page-section {
       display: none;
     }
@@ -88,23 +112,18 @@
       background: var(--card-bg);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 1.25rem;
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
+      padding: 1.5rem;
     }
 
     .summary-card h3 {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-secondary);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
 
     .summary-card .value {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 700;
     }
 
@@ -132,16 +151,14 @@
     }
 
     .card-header h2 {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      line-height: 1.2;
     }
 
     .card-total-header {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--text-secondary);
-      margin-top: 0.2rem;
     }
 
     .btn-primary {
@@ -149,30 +166,25 @@
       color: white;
       border: none;
       padding: 0.6rem 1.2rem;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
     }
 
     .btn-primary:hover {
-      background: var(--primary-dark);
+      background: var(--primary-light);
     }
 
     .btn-add {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 0.4rem 0.9rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 6px;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn-add:hover {
-      background: var(--primary-dark);
     }
 
     .item-list {
@@ -180,13 +192,6 @@
       flex: 1;
       max-height: 220px;
       overflow-y: auto;
-      margin-bottom: 0.75rem;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    .item-list::-webkit-scrollbar {
-      display: none;
     }
 
     .item-list .empty {
@@ -203,16 +208,6 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .item:last-child {
-      border-bottom: none;
-    }
-
-    .item-checkbox {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-
     .item.completed .item-desc,
     .item.completed .item-valor {
       text-decoration: line-through;
@@ -222,13 +217,10 @@
     .item-desc {
       flex: 1;
       font-size: 0.95rem;
-      color: var(--text);
-      word-break: break-word;
     }
 
     .item-valor {
       font-weight: 600;
-      white-space: nowrap;
     }
 
     .btn-delete {
@@ -236,34 +228,14 @@
       border: none;
       color: var(--danger);
       cursor: pointer;
-      font-size: 1rem;
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      transition: background 0.2s;
-      opacity: 0;
-      visibility: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .item:hover .btn-delete {
-      opacity: 1;
-      visibility: visible;
+      padding: 0.2rem;
+      opacity: 0.6;
     }
 
     .btn-delete:hover {
-      background: #fee2e2;
+      opacity: 1;
     }
 
-    .formula-note {
-      text-align: center;
-      margin-top: 1.5rem;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    /* Botão de Histórico Centralizado */
     .history-container {
       display: flex;
       justify-content: center;
@@ -275,90 +247,160 @@
       color: white;
       border: none;
       padding: 0.8rem 2rem;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 700;
-      font-size: 1rem;
       cursor: pointer;
-      transition: background 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: var(--shadow);
     }
 
-    .btn-history:hover {
-      background: #0369a1;
-    }
-
-    /* Estilos da Tela de Histórico */
-    .btn-back-arrow {
-      color: white;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      font-weight: 700;
-      font-size: 1.4rem;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-
-    .btn-back-arrow:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
+    /* ESTILOS DA TELA DE HISTÓRICO */
     .history-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
-    .btn-save-month {
-      background: var(--success);
+    .history-card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .history-icon-badge {
+      background: var(--primary-light);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .history-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-save-purple {
+      background: var(--primary-light);
       color: white;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: background 0.2s;
-      display: inline-flex;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-save-purple:hover {
+      background: var(--primary);
+    }
+
+    /* ACCORDION DO HISTÓRICO */
+    .history-month-card {
+      background: #fafafa;
+      border: 1px solid #f3f4f6;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .history-month-header {
+      padding: 1rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .history-month-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .history-month-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .history-saldo-badge {
+      color: var(--success);
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .history-month-body {
+      padding: 0.5rem 1.2rem 1.2rem 1.2rem;
+      border-top: 1px dashed #e5e7eb;
+      background: #ffffff;
+    }
+
+    .history-salary-info {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin: 0.75rem 0;
+      display: flex;
       align-items: center;
       gap: 0.4rem;
     }
 
-    .btn-save-month:hover {
-      background: #15803d;
-    }
-
-    .history-item {
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 0;
-    }
-
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .history-header {
+    .history-item-row {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--primary-dark);
-      margin-bottom: 0.3rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #f9fafb;
+      font-size: 0.9rem;
     }
 
-    .history-details {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
+    .history-item-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .bullet {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .bullet-conta { background: #f59e0b; }
+    .bullet-compra { background: #a855f7; }
+    .bullet-devolucao { background: #06b6d4; }
+    .bullet-guardado { background: #10b981; }
+
+    .history-item-desc {
+      font-weight: 500;
+    }
+
+    .history-item-desc.completed {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+
+    .history-item-tag {
+      color: #9ca3af;
+      font-size: 0.8rem;
+      margin-left: 0.3rem;
+    }
+
+    .history-item-val {
+      font-weight: 600;
+      color: #6b21a8;
     }
 
     /* Modal */
@@ -385,7 +427,6 @@
       padding: 1.5rem;
       width: 90%;
       max-width: 420px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
 
     .modal-header {
@@ -393,24 +434,6 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
-    }
-
-    .modal-header h2 {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.6rem;
-      cursor: pointer;
-      color: var(--text-secondary);
-      line-height: 1;
-    }
-
-    .modal-close:hover {
-      color: var(--text);
     }
 
     .form-group {
@@ -430,12 +453,6 @@
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 1rem;
-      transition: border-color 0.2s;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--primary);
     }
 
     .modal-actions {
@@ -453,36 +470,15 @@
       border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn-cancel:hover {
-      background: #cbd5e1;
     }
 
     @media (max-width: 768px) {
-      .summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .categories-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .categories-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 480px) {
-      .summary-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .summary-card .value {
-        font-size: 1.4rem;
-      }
+      .summary-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -492,7 +488,9 @@
   <div id="pageMain" class="page-section active-page">
     <header>
       <div class="header-content">
-        <h1>💰 Gestão Financeira</h1>
+        <div class="header-text">
+          <h1>💰 Gestão Financeira</h1>
+        </div>
         <button class="btn-primary" id="btnAlterarSalario">Alterar Salário</button>
       </div>
     </header>
@@ -563,14 +561,11 @@
         </div>
       </section>
 
-      <!-- Botão para alternar para a Tela de Histórico -->
       <div class="history-container">
         <button class="btn-history" id="btnIrParaHistorico">
           📜 Histórico de Despesas
         </button>
       </div>
-
-      <p class="formula-note">Saldo Atual = Salário − (Itens Concluídos das 4 Categorias)</p>
     </main>
   </div>
 
@@ -579,8 +574,16 @@
     <header>
       <div class="header-content">
         <div class="header-title-group">
-          <button class="btn-back-arrow" id="btnVoltarMain" title="Voltar">←</button>
-          <h1>📜 Histórico Mensal</h1>
+          <button class="btn-icon-circle" id="btnVoltarMain" title="Voltar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div class="btn-icon-circle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="header-text">
+            <h1>Histórico Mensal</h1>
+            <p>Veja o saldo e itens de cada mês</p>
+          </div>
         </div>
       </div>
     </header>
@@ -588,20 +591,30 @@
     <main class="container">
       <div class="card">
         <div class="history-card-header">
-          <h2>Registros Guardados</h2>
-          <button class="btn-save-month" id="btnSalvarMes">💾 Salvar Mês</button>
+          <div class="history-card-title-group">
+            <div class="history-icon-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h2>Histórico Mensal</h2>
+          </div>
+          <button class="btn-save-purple" id="btnSalvarMes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Salvar Mês
+          </button>
         </div>
+        <p class="history-subtitle">Registre o saldo final do mês com todos os itens anotados.</p>
+
         <div id="listaHistorico"></div>
       </div>
     </main>
   </div>
 
-  <!-- Modal Global de Edição/Adição -->
+  <!-- Modal Global -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <div class="modal-header">
         <h2 id="modalTitulo">Adicionar</h2>
-        <button class="modal-close" id="btnFecharModal">&times;</button>
+        <button style="background:none;border:none;font-size:1.5rem;cursor:pointer;" id="btnFecharModal">&times;</button>
       </div>
       <form id="formModal">
         <div class="form-group" id="campoDescricao">
@@ -637,7 +650,6 @@
       let modalMode = null;      
       let modalCategory = null;  
 
-      /* Navegação entre páginas */
       const pageMain = document.getElementById('pageMain');
       const pageHistory = document.getElementById('pageHistory');
 
@@ -652,23 +664,16 @@
         pageMain.classList.add('active-page');
       });
 
-      /* Funções do LocalStorage */
       function loadState() {
         try {
           const saved = localStorage.getItem(STORAGE_KEY);
           if (saved) return { ...DEFAULT_STATE, ...JSON.parse(saved) };
-        } catch (e) {
-          console.error('Erro ao carregar dados:', e);
-        }
+        } catch (e) {}
         return { ...DEFAULT_STATE };
       }
 
       function saveState() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {
-          console.error('Erro ao salvar dados:', e);
-        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       }
 
       function loadHistory() {
@@ -683,7 +688,6 @@
         localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       }
 
-      /* Utilitários */
       function formatCurrency(value) {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
       }
@@ -729,7 +733,6 @@
         };
       }
 
-      /* Renderização Principal */
       function renderizarCategoria(categoryKey, items, listId, emptyMessage) {
         const ul = document.getElementById(listId);
         ul.innerHTML = '';
@@ -745,18 +748,11 @@
           const li = document.createElement('li');
           li.className = `item ${item.concluido ? 'completed' : ''}`;
           
-          const trashIcon = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-          `;
-
           li.innerHTML = `
             <input type="checkbox" class="item-checkbox" data-category="${categoryKey}" data-id="${item.id}" ${item.concluido ? 'checked' : ''}>
             <span class="item-desc">${escapeHtml(item.descricao)}</span>
             <span class="item-valor">${formatCurrency(item.valor)}</span>
-            <button class="btn-delete" data-category="${categoryKey}" data-id="${item.id}" title="Remover">${trashIcon}</button>
+            <button class="btn-delete" data-category="${categoryKey}" data-id="${item.id}" title="Remover">&times;</button>
           `;
           ul.appendChild(li);
         });
@@ -775,56 +771,119 @@
         document.getElementById('totalDevolucoes').textContent = formatCurrency(totals.totalDevolucoes);
         document.getElementById('totalGuardados').textContent = formatCurrency(totals.totalGuardados);
 
-        const saldoEl = document.getElementById('saldoValor');
-        saldoEl.style.color = totals.saldoAtual < 0 ? 'var(--danger)' : 'var(--success)';
-
         renderizarCategoria('contas', state.contas, 'listaContas', 'Nenhuma conta a pagar.');
         renderizarCategoria('compras', state.compras, 'listaCompras', 'Nenhuma compra realizada.');
         renderizarCategoria('devolucoes', state.devolucoes, 'listaDevolucoes', 'Nenhuma devolução.');
         renderizarCategoria('guardados', state.guardados, 'listaGuardados', 'Nenhum valor guardado.');
       }
 
-      /* Lógica do Histórico */
+      /* RENDERIZAÇÃO DO HISTÓRICO COM EXPANSÃO E VISUAL IGUAL À IMAGEM */
       function renderHistory() {
         const history = loadHistory();
         const container = document.getElementById('listaHistorico');
         container.innerHTML = '';
 
         if (history.length === 0) {
-          container.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">Nenhum histórico salvo ainda.</p>';
+          container.innerHTML = '<p style="color: var(--text-secondary); font-style: italic; padding: 1rem 0;">Nenhum histórico salvo ainda.</p>';
           return;
         }
 
-        history.forEach(entry => {
-          const item = document.createElement('div');
-          item.className = 'history-item';
-          item.innerHTML = `
-            <div class="history-header">
-              <span>📅 ${escapeHtml(entry.mesAno)}</span>
-              <span>Total Gasto: ${formatCurrency(entry.totalGasto)}</span>
+        history.forEach((entry, index) => {
+          const card = document.createElement('div');
+          card.className = 'history-month-card';
+
+          const categoryLabels = {
+            contas: 'Conta',
+            compras: 'Compra',
+            devolucoes: 'Devolução',
+            guardados: 'Guardado'
+          };
+
+          let itemsHtml = '';
+          const allItems = [
+            ...(entry.items.contas || []).map(i => ({...i, cat: 'conta', label: 'Conta'})),
+            ...(entry.items.compras || []).map(i => ({...i, cat: 'compra', label: 'Compra'})),
+            ...(entry.items.devolucoes || []).map(i => ({...i, cat: 'devolucao', label: 'Devolução'})),
+            ...(entry.items.guardados || []).map(i => ({...i, cat: 'guardado', label: 'Guardado'}))
+          ];
+
+          allItems.forEach(item => {
+            itemsHtml += `
+              <div class="history-item-row">
+                <div class="history-item-left">
+                  <span class="bullet bullet-${item.cat}"></span>
+                  <span class="history-item-desc ${item.concluido ? 'completed' : ''}">${escapeHtml(item.descricao)}</span>
+                  <span class="history-item-tag">${item.label}</span>
+                </div>
+                <span class="history-item-val">${formatCurrency(item.valor)}</span>
+              </div>
+            `;
+          });
+
+          card.innerHTML = `
+            <div class="history-month-header" onclick="toggleMonth(${index})">
+              <div class="history-month-title">
+                <span id="arrow-${index}">^</span>
+                <span>${escapeHtml(entry.mesAno)}</span>
+              </div>
+              <div class="history-month-right">
+                <div class="history-saldo-badge">
+                  <span>↗</span> ${formatCurrency(entry.saldoFinal)}
+                </div>
+                <button class="btn-delete" style="opacity:1;" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                </button>
+              </div>
             </div>
-            <div class="history-details">
-              <p>Salário: ${formatCurrency(entry.salario)} | Saldo Final: ${formatCurrency(entry.saldoFinal)}</p>
+            <div class="history-month-body" id="body-${index}">
+              <div class="history-salary-info">
+                <span>💳 Salário: ${formatCurrency(entry.salario)}</span>
+              </div>
+              ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item registrado.</p>'}
             </div>
           `;
-          container.appendChild(item);
+          container.appendChild(card);
         });
       }
 
+      window.toggleMonth = function(index) {
+        const body = document.getElementById(`body-${index}`);
+        const arrow = document.getElementById(`arrow-${index}`);
+        if (body.style.display === 'none') {
+          body.style.display = 'block';
+          arrow.textContent = '^';
+        } else {
+          body.style.display = 'none';
+          arrow.textContent = 'v';
+        }
+      };
+
+      window.deleteHistoryEntry = function(event, index) {
+        event.stopPropagation();
+        if (confirm('Deseja excluir este registro do histórico?')) {
+          const history = loadHistory();
+          history.splice(index, 1);
+          saveHistory(history);
+          renderHistory();
+        }
+      };
+
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
-        const mesAno = prompt('Digite o mês/ano de referência (ex: Agosto/2026):');
+        const mesAno = prompt('Digite o mês/ano de referência (ex: Agosto 2026):');
         if (!mesAno) return;
 
-        const sumConcluidos = arr => arr.filter(item => item.concluido).reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
-        const totalGasto = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
-        const saldoFinal = (state.salario || 0) - totalGasto;
+        const totals = getTotals();
 
         const newEntry = {
           mesAno,
           salario: state.salario || 0,
-          totalGasto,
-          saldoFinal,
-          dataSalvo: new Date().toLocaleDateString('pt-BR')
+          saldoFinal: totals.saldoAtual,
+          items: {
+            contas: JSON.parse(JSON.stringify(state.contas)),
+            compras: JSON.parse(JSON.stringify(state.compras)),
+            devolucoes: JSON.parse(JSON.stringify(state.devolucoes)),
+            guardados: JSON.parse(JSON.stringify(state.guardados))
+          }
         };
 
         const history = loadHistory();
@@ -834,7 +893,7 @@
         alert('Mês salvo no histórico com sucesso!');
       });
 
-      /* Modal */
+      /* Modal Helpers */
       function openModal(mode, category = null) {
         modalMode = mode;
         modalCategory = category;
@@ -844,9 +903,8 @@
         const campoDescricao = document.getElementById('campoDescricao');
         const inputDescricao = document.getElementById('inputDescricao');
         const inputValor = document.getElementById('inputValor');
-        const form = document.getElementById('formModal');
 
-        form.reset();
+        document.getElementById('formModal').reset();
 
         if (mode === 'salario') {
           title.textContent = 'Alterar Salário';
@@ -854,13 +912,7 @@
           inputValor.value = formatCurrency(state.salario).replace('R$', '').trim();
           inputValor.focus();
         } else {
-          const categoryLabels = {
-            contas: 'Adicionar Conta',
-            compras: 'Adicionar Compra',
-            devolucoes: 'Adicionar Devolução',
-            guardados: 'Adicionar Valor'
-          };
-          title.textContent = categoryLabels[category] || 'Adicionar';
+          title.textContent = 'Adicionar Item';
           campoDescricao.style.display = 'block';
           inputDescricao.focus();
         }
@@ -870,21 +922,16 @@
 
       function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
-        modalMode = null;
-        modalCategory = null;
       }
 
-      /* Event Listeners */
       document.getElementById('btnAlterarSalario').addEventListener('click', () => openModal('salario'));
 
       document.addEventListener('click', (e) => {
         const btnAdd = e.target.closest('.btn-add');
-        if (btnAdd) {
-          openModal('item', btnAdd.dataset.category);
-        }
+        if (btnAdd) openModal('item', btnAdd.dataset.category);
 
         const btnDelete = e.target.closest('.btn-delete');
-        if (btnDelete) {
+        if (btnDelete && btnDelete.dataset.category) {
           const category = btnDelete.dataset.category;
           const id = btnDelete.dataset.id;
           state[category] = state[category].filter(item => item.id !== id);
@@ -895,9 +942,6 @@
 
       document.getElementById('btnFecharModal').addEventListener('click', closeModal);
       document.getElementById('btnCancelarModal').addEventListener('click', closeModal);
-      document.getElementById('modalOverlay').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) closeModal();
-      });
 
       document.addEventListener('change', (e) => {
         if (e.target.classList.contains('item-checkbox')) {
