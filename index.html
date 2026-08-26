@@ -62,6 +62,15 @@
       padding: 1.5rem 1rem;
     }
 
+    /* Alternância de Páginas */
+    .page-section {
+      display: none;
+    }
+
+    .page-section.active-page {
+      display: block;
+    }
+
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -138,8 +147,6 @@
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
-      text-decoration: none;
-      display: inline-block;
     }
 
     .btn-primary:hover {
@@ -250,7 +257,7 @@
       font-size: 0.9rem;
     }
 
-    /* Container do Botão de Histórico Centralizado */
+    /* Botão de Histórico Centralizado */
     .history-container {
       display: flex;
       justify-content: center;
@@ -267,7 +274,6 @@
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.2s;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -276,6 +282,55 @@
 
     .btn-history:hover {
       background: #0369a1;
+    }
+
+    /* Estilos da Tela de Histórico */
+    .btn-back {
+      color: white;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-back:hover { background: rgba(255,255,255,0.3); }
+
+    .btn-save-month {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      transition: background 0.2s;
+    }
+
+    .btn-save-month:hover { background: #15803d; }
+
+    .history-item {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+    }
+
+    .history-item:last-child { border-bottom: none; }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+      margin-bottom: 0.3rem;
+    }
+
+    .history-details {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
     }
 
     /* Modal */
@@ -404,89 +459,113 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <h1>💰 Gestão Financeira</h1>
-      <button class="btn-primary" id="btnAlterarSalario">Alterar Salário</button>
-    </div>
-  </header>
 
-  <main class="container">
-    <section class="summary-grid">
-      <div class="card summary-card">
-        <h3>Salário</h3>
-        <p class="value" id="salarioValor">R$ 0,00</p>
+  <!-- ================= TELA PRINCIPAL ================= -->
+  <div id="pageMain" class="page-section active-page">
+    <header>
+      <div class="header-content">
+        <h1>💰 Gestão Financeira</h1>
+        <button class="btn-primary" id="btnAlterarSalario">Alterar Salário</button>
       </div>
-      <div class="card summary-card">
-        <h3>Saldo Atual</h3>
-        <p class="value" id="saldoValor">R$ 0,00</p>
-      </div>
-      <div class="card summary-card">
-        <h3>Contas a Pagar</h3>
-        <p class="value" id="contasTotalTopo">R$ 0,00</p>
-      </div>
-      <div class="card summary-card">
-        <h3>Compras Realizadas</h3>
-        <p class="value" id="comprasTotalTopo">R$ 0,00</p>
-      </div>
-    </section>
+    </header>
 
-    <section class="categories-grid">
-      <div class="card category-card">
-        <div class="card-header">
-          <div class="card-header-titles">
-            <h2>Contas a Pagar</h2>
-            <span class="card-total-header" id="totalContas">R$ 0,00</span>
-          </div>
-          <button class="btn-add" data-category="contas">+Adicionar</button>
+    <main class="container">
+      <section class="summary-grid">
+        <div class="card summary-card">
+          <h3>Salário</h3>
+          <p class="value" id="salarioValor">R$ 0,00</p>
         </div>
-        <ul class="item-list" id="listaContas"></ul>
-      </div>
-
-      <div class="card category-card">
-        <div class="card-header">
-          <div class="card-header-titles">
-            <h2>Compras Realizadas</h2>
-            <span class="card-total-header" id="totalCompras">R$ 0,00</span>
-          </div>
-          <button class="btn-add" data-category="compras">+Adicionar</button>
+        <div class="card summary-card">
+          <h3>Saldo Atual</h3>
+          <p class="value" id="saldoValor">R$ 0,00</p>
         </div>
-        <ul class="item-list" id="listaCompras"></ul>
-      </div>
-
-      <div class="card category-card">
-        <div class="card-header">
-          <div class="card-header-titles">
-            <h2>Devolver na Caixinha</h2>
-            <span class="card-total-header" id="totalDevolucoes">R$ 0,00</span>
-          </div>
-          <button class="btn-add" data-category="devolucoes">+Adicionar</button>
+        <div class="card summary-card">
+          <h3>Contas a Pagar</h3>
+          <p class="value" id="contasTotalTopo">R$ 0,00</p>
         </div>
-        <ul class="item-list" id="listaDevolucoes"></ul>
-      </div>
-
-      <div class="card category-card">
-        <div class="card-header">
-          <div class="card-header-titles">
-            <h2>Guardar Dinheiro</h2>
-            <span class="card-total-header" id="totalGuardados">R$ 0,00</span>
-          </div>
-          <button class="btn-add" data-category="guardados">+Adicionar</button>
+        <div class="card summary-card">
+          <h3>Compras Realizadas</h3>
+          <p class="value" id="comprasTotalTopo">R$ 0,00</p>
         </div>
-        <ul class="item-list" id="listaGuardados"></ul>
+      </section>
+
+      <section class="categories-grid">
+        <div class="card category-card">
+          <div class="card-header">
+            <div class="card-header-titles">
+              <h2>Contas a Pagar</h2>
+              <span class="card-total-header" id="totalContas">R$ 0,00</span>
+            </div>
+            <button class="btn-add" data-category="contas">+Adicionar</button>
+          </div>
+          <ul class="item-list" id="listaContas"></ul>
+        </div>
+
+        <div class="card category-card">
+          <div class="card-header">
+            <div class="card-header-titles">
+              <h2>Compras Realizadas</h2>
+              <span class="card-total-header" id="totalCompras">R$ 0,00</span>
+            </div>
+            <button class="btn-add" data-category="compras">+Adicionar</button>
+          </div>
+          <ul class="item-list" id="listaCompras"></ul>
+        </div>
+
+        <div class="card category-card">
+          <div class="card-header">
+            <div class="card-header-titles">
+              <h2>Devolver na Caixinha</h2>
+              <span class="card-total-header" id="totalDevolucoes">R$ 0,00</span>
+            </div>
+            <button class="btn-add" data-category="devolucoes">+Adicionar</button>
+          </div>
+          <ul class="item-list" id="listaDevolucoes"></ul>
+        </div>
+
+        <div class="card category-card">
+          <div class="card-header">
+            <div class="card-header-titles">
+              <h2>Guardar Dinheiro</h2>
+              <span class="card-total-header" id="totalGuardados">R$ 0,00</span>
+            </div>
+            <button class="btn-add" data-category="guardados">+Adicionar</button>
+          </div>
+          <ul class="item-list" id="listaGuardados"></ul>
+        </div>
+      </section>
+
+      <!-- Botão para alternar para a Tela de Histórico -->
+      <div class="history-container">
+        <button class="btn-history" id="btnIrParaHistorico">
+          📜 Histórico de Despesas
+        </button>
       </div>
-    </section>
 
-    <!-- Botão de Histórico Centralizado -->
-    <div class="history-container">
-      <a href="historico.html" class="btn-history">
-        📜 Histórico de Despesas
-      </a>
-    </div>
+      <p class="formula-note">Saldo Atual = Salário − (Itens Concluídos das 4 Categorias)</p>
+    </main>
+  </div>
 
-    <p class="formula-note">Saldo Atual = Salário − (Itens Concluídos das 4 Categorias)</p>
-  </main>
+  <!-- ================= TELA DE HISTÓRICO ================= -->
+  <div id="pageHistory" class="page-section">
+    <header>
+      <div class="header-content">
+        <h1>📜 Histórico Mensal</h1>
+        <button class="btn-back" id="btnVoltarMain">← Voltar</button>
+      </div>
+    </header>
 
+    <main class="container">
+      <button class="btn-save-month" id="btnSalvarMes">💾 Salvar Mês Atual no Histórico</button>
+
+      <div class="card">
+        <h2>Registros Guardados</h2>
+        <div id="listaHistorico" style="margin-top: 1rem;"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Global de Edição/Adição -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <div class="modal-header">
@@ -513,6 +592,7 @@
   <script>
     (function() {
       const STORAGE_KEY = 'gestaoFinanceiraData';
+      const HISTORY_KEY = 'gestaoFinanceiraHistorico';
 
       const DEFAULT_STATE = {
         salario: 0,
@@ -526,13 +606,26 @@
       let modalMode = null;      
       let modalCategory = null;  
 
+      /* Navegação entre páginas */
+      const pageMain = document.getElementById('pageMain');
+      const pageHistory = document.getElementById('pageHistory');
+
+      document.getElementById('btnIrParaHistorico').addEventListener('click', () => {
+        pageMain.classList.remove('active-page');
+        pageHistory.classList.add('active-page');
+        renderHistory();
+      });
+
+      document.getElementById('btnVoltarMain').addEventListener('click', () => {
+        pageHistory.classList.remove('active-page');
+        pageMain.classList.add('active-page');
+      });
+
+      /* Funções do LocalStorage */
       function loadState() {
         try {
           const saved = localStorage.getItem(STORAGE_KEY);
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            return { ...DEFAULT_STATE, ...parsed };
-          }
+          if (saved) return { ...DEFAULT_STATE, ...JSON.parse(saved) };
         } catch (e) {
           console.error('Erro ao carregar dados:', e);
         }
@@ -547,11 +640,21 @@
         }
       }
 
+      function loadHistory() {
+        try {
+          return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveHistory(history) {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+      }
+
+      /* Utilitários */
       function formatCurrency(value) {
-        return new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
-        }).format(value || 0);
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
       }
 
       function parseCurrency(input) {
@@ -586,25 +689,16 @@
         const totalContasPendentes = sumPendentes(state.contas);
         const totalComprasPendentes = sumPendentes(state.compras);
 
-        const totalConcluidoContas = sumConcluidos(state.contas);
-        const totalConcluidoCompras = sumConcluidos(state.compras);
-        const totalConcluidoDevolucoes = sumConcluidos(state.devolucoes);
-        const totalConcluidoGuardados = sumConcluidos(state.guardados);
-
-        const totalAbatido = totalConcluidoContas + totalConcluidoCompras + totalConcluidoDevolucoes + totalConcluidoGuardados;
-        const saldoAtual = (Number(state.salario) || 0) - totalAbatido;
+        const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
+        const saldoAtual = (Number(state.salario) || 0) - totalConcluido;
 
         return {
-          totalContas,
-          totalCompras,
-          totalDevolucoes,
-          totalGuardados,
-          totalContasPendentes,
-          totalComprasPendentes,
-          saldoAtual
+          totalContas, totalCompras, totalDevolucoes, totalGuardados,
+          totalContasPendentes, totalComprasPendentes, saldoAtual
         };
       }
 
+      /* Renderização Principal */
       function renderizarCategoria(categoryKey, items, listId, emptyMessage) {
         const ul = document.getElementById(listId);
         ul.innerHTML = '';
@@ -651,11 +745,7 @@
         document.getElementById('totalGuardados').textContent = formatCurrency(totals.totalGuardados);
 
         const saldoEl = document.getElementById('saldoValor');
-        if (totals.saldoAtual < 0) {
-          saldoEl.style.color = 'var(--danger)';
-        } else {
-          saldoEl.style.color = 'var(--success)';
-        }
+        saldoEl.style.color = totals.saldoAtual < 0 ? 'var(--danger)' : 'var(--success)';
 
         renderizarCategoria('contas', state.contas, 'listaContas', 'Nenhuma conta a pagar.');
         renderizarCategoria('compras', state.compras, 'listaCompras', 'Nenhuma compra realizada.');
@@ -663,6 +753,57 @@
         renderizarCategoria('guardados', state.guardados, 'listaGuardados', 'Nenhum valor guardado.');
       }
 
+      /* Lógica do Histórico */
+      function renderHistory() {
+        const history = loadHistory();
+        const container = document.getElementById('listaHistorico');
+        container.innerHTML = '';
+
+        if (history.length === 0) {
+          container.innerHTML = '<p style="color: var(--text-secondary); font-style: italic;">Nenhum histórico salvo ainda.</p>';
+          return;
+        }
+
+        history.forEach(entry => {
+          const item = document.createElement('div');
+          item.className = 'history-item';
+          item.innerHTML = `
+            <div class="history-header">
+              <span>📅 ${escapeHtml(entry.mesAno)}</span>
+              <span>Total Gasto: ${formatCurrency(entry.totalGasto)}</span>
+            </div>
+            <div class="history-details">
+              <p>Salário: ${formatCurrency(entry.salario)} | Saldo Final: ${formatCurrency(entry.saldoFinal)}</p>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      document.getElementById('btnSalvarMes').addEventListener('click', () => {
+        const mesAno = prompt('Digite o mês/ano de referência (ex: Agosto/2026):');
+        if (!mesAno) return;
+
+        const sumConcluidos = arr => arr.filter(item => item.concluido).reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+        const totalGasto = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
+        const saldoFinal = (state.salario || 0) - totalGasto;
+
+        const newEntry = {
+          mesAno,
+          salario: state.salario || 0,
+          totalGasto,
+          saldoFinal,
+          dataSalvo: new Date().toLocaleDateString('pt-BR')
+        };
+
+        const history = loadHistory();
+        history.unshift(newEntry);
+        saveHistory(history);
+        renderHistory();
+        alert('Mês salvo no histórico com sucesso!');
+      });
+
+      /* Modal */
       function openModal(mode, category = null) {
         modalMode = mode;
         modalCategory = category;
@@ -680,7 +821,6 @@
           title.textContent = 'Alterar Salário';
           campoDescricao.style.display = 'none';
           inputValor.value = formatCurrency(state.salario).replace('R$', '').trim();
-          inputValor.placeholder = '0,00';
           inputValor.focus();
         } else {
           const categoryLabels = {
@@ -691,9 +831,6 @@
           };
           title.textContent = categoryLabels[category] || 'Adicionar';
           campoDescricao.style.display = 'block';
-          inputDescricao.value = '';
-          inputValor.value = '';
-          inputValor.placeholder = '0,00';
           inputDescricao.focus();
         }
 
@@ -706,15 +843,22 @@
         modalCategory = null;
       }
 
-      document.getElementById('btnAlterarSalario').addEventListener('click', () => {
-        openModal('salario');
-      });
+      /* Event Listeners */
+      document.getElementById('btnAlterarSalario').addEventListener('click', () => openModal('salario'));
 
       document.addEventListener('click', (e) => {
         const btnAdd = e.target.closest('.btn-add');
         if (btnAdd) {
-          const category = btnAdd.dataset.category;
-          openModal('item', category);
+          openModal('item', btnAdd.dataset.category);
+        }
+
+        const btnDelete = e.target.closest('.btn-delete');
+        if (btnDelete) {
+          const category = btnDelete.dataset.category;
+          const id = btnDelete.dataset.id;
+          state[category] = state[category].filter(item => item.id !== id);
+          saveState();
+          updateUI();
         }
       });
 
@@ -737,46 +881,23 @@
         }
       });
 
-      document.addEventListener('click', (e) => {
-        const btnDelete = e.target.closest('.btn-delete');
-        if (btnDelete) {
-          const category = btnDelete.dataset.category;
-          const id = btnDelete.dataset.id;
-          state[category] = state[category].filter(item => item.id !== id);
-          saveState();
-          updateUI();
-        }
-      });
-
       document.getElementById('formModal').addEventListener('submit', (e) => {
         e.preventDefault();
-
-        const inputValor = document.getElementById('inputValor').value;
-        const valor = parseCurrency(inputValor);
+        const valor = parseCurrency(document.getElementById('inputValor').value);
 
         if (modalMode === 'salario') {
-          if (valor < 0) {
-            alert('Informe um valor válido para o salário.');
-            return;
-          }
+          if (valor < 0) return alert('Informe um valor válido.');
           state.salario = valor;
         } else if (modalMode === 'item' && modalCategory) {
-          const inputDescricao = document.getElementById('inputDescricao').value.trim();
-          const descricao = inputDescricao || 'Sem descrição';
+          const descricao = document.getElementById('inputDescricao').value.trim() || 'Sem descrição';
+          if (valor <= 0) return alert('Informe um valor maior que zero.');
 
-          if (valor <= 0) {
-            alert('Informe um valor maior que zero.');
-            return;
-          }
-
-          const novoItem = {
+          state[modalCategory].push({
             id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
             descricao,
             valor,
             concluido: false
-          };
-
-          state[modalCategory].push(novoItem);
+          });
         }
 
         saveState();
