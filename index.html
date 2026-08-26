@@ -33,10 +33,11 @@
       padding-bottom: 2rem;
     }
 
+    /* Cabeçalho Maior */
     header {
       background: var(--primary);
       color: white;
-      padding: 1.2rem 0;
+      padding: 2.5rem 0; /* Aumentado */
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
@@ -52,7 +53,7 @@
     }
 
     .header-content h1 {
-      font-size: 1.5rem;
+      font-size: 2.2rem; /* Aumentado */
       font-weight: 700;
     }
 
@@ -147,12 +148,19 @@
       background: var(--primary-dark);
     }
 
+    /* Scrollbar Invisível */
     .item-list {
       list-style: none;
       flex: 1;
       max-height: 220px;
       overflow-y: auto;
       margin-bottom: 0.75rem;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;  /* IE/Edge */
+    }
+
+    .item-list::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
     }
 
     .item-list .empty {
@@ -173,6 +181,18 @@
       border-bottom: none;
     }
 
+    .item-checkbox {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .item.completed .item-desc,
+    .item.completed .item-valor {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
     .item-desc {
       flex: 1;
       font-size: 0.95rem;
@@ -185,6 +205,7 @@
       white-space: nowrap;
     }
 
+    /* Lixeirinha oculta por padrão, exibe no hover */
     .btn-delete {
       background: transparent;
       border: none;
@@ -194,6 +215,16 @@
       padding: 0.2rem 0.4rem;
       border-radius: 4px;
       transition: background 0.2s;
+      opacity: 0;
+      visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .item:hover .btn-delete {
+      opacity: 1;
+      visibility: visible;
     }
 
     .btn-delete:hover {
@@ -377,7 +408,7 @@
       <div class="card category-card">
         <div class="card-header">
           <h2>Contas a Pagar</h2>
-          <button class="btn-add" data-category="contas">+ Adicionar Conta</button>
+          <button class="btn-add" data-category="contas">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaContas"></ul>
         <div class="card-footer">
@@ -390,7 +421,7 @@
       <div class="card category-card">
         <div class="card-header">
           <h2>Compras Realizadas</h2>
-          <button class="btn-add" data-category="compras">+ Adicionar Compra</button>
+          <button class="btn-add" data-category="compras">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaCompras"></ul>
         <div class="card-footer">
@@ -403,7 +434,7 @@
       <div class="card category-card">
         <div class="card-header">
           <h2>Devolver na Caixinha</h2>
-          <button class="btn-add" data-category="devolucoes">+ Adicionar Devolução</button>
+          <button class="btn-add" data-category="devolucoes">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaDevolucoes"></ul>
         <div class="card-footer">
@@ -416,7 +447,7 @@
       <div class="card category-card">
         <div class="card-header">
           <h2>Guardar Dinheiro</h2>
-          <button class="btn-add" data-category="guardados">+ Adicionar Valor</button>
+          <button class="btn-add" data-category="guardados">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaGuardados"></ul>
         <div class="card-footer">
@@ -502,7 +533,6 @@
       function parseCurrency(input) {
         if (!input) return 0;
         let cleaned = String(input).replace(/[R$\s]/g, '');
-        // Trata "1.234,56" -> 1234.56
         if (cleaned.includes(',') && cleaned.includes('.')) {
           cleaned = cleaned.replace(/\./g, '').replace(',', '.');
         } else if (cleaned.includes(',')) {
@@ -521,10 +551,22 @@
 
       function getTotals() {
         const sum = arr => arr.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+        
+        // Apenas itens NÃO concluídos entram nos totais do topo para Contas e Compras
+        const totalContasPendentes = state.contas
+          .filter(item => !item.concluido)
+          .reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+
+        const totalComprasPendentes = state.compras
+          .filter(item => !item.concluido)
+          .reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+
+        // Soma total das categorias (para os rodapés das placas)
         const totalContas = sum(state.contas);
         const totalCompras = sum(state.compras);
         const totalDevolucoes = sum(state.devolucoes);
         const totalGuardados = sum(state.guardados);
+        
         const totalSaidas = totalContas + totalCompras + totalDevolucoes + totalGuardados;
         const saldoAtual = (Number(state.salario) || 0) - totalSaidas;
 
@@ -533,6 +575,8 @@
           totalCompras,
           totalDevolucoes,
           totalGuardados,
+          totalContasPendentes,
+          totalComprasPendentes,
           totalSaidas,
           saldoAtual
         };
@@ -550,11 +594,21 @@
 
         items.forEach(item => {
           const li = document.createElement('li');
-          li.className = 'item';
+          li.className = `item ${item.concluido ? 'completed' : ''}`;
+          
+          // Ícone de lixeira SVG
+          const trashIcon = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          `;
+
           li.innerHTML = `
+            <input type="checkbox" class="item-checkbox" data-category="${categoryKey}" data-id="${item.id}" ${item.concluido ? 'checked' : ''}>
             <span class="item-desc">${escapeHtml(item.descricao)}</span>
             <span class="item-valor">${formatCurrency(item.valor)}</span>
-            <button class="btn-delete" data-category="${categoryKey}" data-id="${item.id}" title="Remover">✕</button>
+            <button class="btn-delete" data-category="${categoryKey}" data-id="${item.id}" title="Remover">${trashIcon}</button>
           `;
           ul.appendChild(li);
         });
@@ -563,11 +617,11 @@
       function updateUI() {
         const totals = getTotals();
 
-        // Resumo superior
+        // Resumo superior (Contas e Compras mostram apenas os valores pendentes/não concluídos)
         document.getElementById('salarioValor').textContent = formatCurrency(state.salario);
         document.getElementById('saldoValor').textContent = formatCurrency(totals.saldoAtual);
-        document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContas);
-        document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalCompras);
+        document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContasPendentes);
+        document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalComprasPendentes);
 
         // Totais das seções
         document.getElementById('totalContas').textContent = formatCurrency(totals.totalContas);
@@ -607,7 +661,6 @@
         if (mode === 'salario') {
           title.textContent = 'Alterar Salário';
           campoDescricao.style.display = 'none';
-          // Pré-preenche com o salário atual formatado
           inputValor.value = formatCurrency(state.salario).replace('R$', '').trim();
           inputValor.placeholder = '0,00';
           inputValor.focus();
@@ -641,7 +694,7 @@
         openModal('salario');
       });
 
-      // Abrir modal de adição (delegação para os botões de categoria)
+      // Abrir modal de adição
       document.addEventListener('click', (e) => {
         const btnAdd = e.target.closest('.btn-add');
         if (btnAdd) {
@@ -657,7 +710,21 @@
         if (e.target === e.currentTarget) closeModal();
       });
 
-      // Deletar item (delegação)
+      // Marcar/desmarcar item como concluído
+      document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('item-checkbox')) {
+          const category = e.target.dataset.category;
+          const id = e.target.dataset.id;
+          const targetItem = state[category].find(item => item.id === id);
+          if (targetItem) {
+            targetItem.concluido = e.target.checked;
+            saveState();
+            updateUI();
+          }
+        }
+      });
+
+      // Deletar item
       document.addEventListener('click', (e) => {
         const btnDelete = e.target.closest('.btn-delete');
         if (btnDelete) {
@@ -696,7 +763,8 @@
           const novoItem = {
             id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
             descricao,
-            valor
+            valor,
+            concluido: false
           };
 
           state[modalCategory].push(novoItem);
