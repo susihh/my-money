@@ -122,7 +122,6 @@
       line-height: 1.2;
     }
 
-    /* Subtítulo com o valor total */
     .card-total-header {
       font-size: 0.95rem;
       font-weight: 700;
@@ -383,7 +382,6 @@
   </header>
 
   <main class="container">
-    <!-- Cartões de resumo -->
     <section class="summary-grid">
       <div class="card summary-card">
         <h3>Salário</h3>
@@ -403,9 +401,7 @@
       </div>
     </section>
 
-    <!-- Categorias -->
     <section class="categories-grid">
-      <!-- Contas a Pagar -->
       <div class="card category-card">
         <div class="card-header">
           <div class="card-header-titles">
@@ -417,7 +413,6 @@
         <ul class="item-list" id="listaContas"></ul>
       </div>
 
-      <!-- Compras Realizadas -->
       <div class="card category-card">
         <div class="card-header">
           <div class="card-header-titles">
@@ -429,7 +424,6 @@
         <ul class="item-list" id="listaCompras"></ul>
       </div>
 
-      <!-- Devolver na Caixinha -->
       <div class="card category-card">
         <div class="card-header">
           <div class="card-header-titles">
@@ -441,7 +435,6 @@
         <ul class="item-list" id="listaDevolucoes"></ul>
       </div>
 
-      <!-- Guardar Dinheiro -->
       <div class="card category-card">
         <div class="card-header">
           <div class="card-header-titles">
@@ -457,7 +450,6 @@
     <p class="formula-note">Saldo Atual = Salário − (Itens Concluídos das 4 Categorias)</p>
   </main>
 
-  <!-- Modal -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <div class="modal-header">
@@ -487,17 +479,16 @@
 
       const DEFAULT_STATE = {
         salario: 0,
-        contas: [],       // Contas a Pagar
-        compras: [],      // Compras Realizadas
-        devolucoes: [],   // Devolver na Caixinha
-        guardados: []     // Guardar Dinheiro
+        contas: [],
+        compras: [],
+        devolucoes: [],
+        guardados: []
       };
 
       let state = loadState();
       let modalMode = null;      
       let modalCategory = null;  
 
-      // ---------- Persistência ----------
       function loadState() {
         try {
           const saved = localStorage.getItem(STORAGE_KEY);
@@ -519,7 +510,6 @@
         }
       }
 
-      // ---------- Utilidades ----------
       function formatCurrency(value) {
         return new Intl.NumberFormat('pt-BR', {
           style: 'currency',
@@ -551,23 +541,19 @@
         const sumConcluidos = arr => arr.filter(item => item.concluido).reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
         const sumPendentes = arr => arr.filter(item => !item.concluido).reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
 
-        // Totais de cada bloco (todos os itens)
         const totalContas = sum(state.contas);
         const totalCompras = sum(state.compras);
         const totalDevolucoes = sum(state.devolucoes);
         const totalGuardados = sum(state.guardados);
 
-        // Valores pendentes (para os cards do topo)
         const totalContasPendentes = sumPendentes(state.contas);
         const totalComprasPendentes = sumPendentes(state.compras);
 
-        // Soma APENAS dos itens concluídos dos quatro blocos de baixo
         const totalConcluidoContas = sumConcluidos(state.contas);
         const totalConcluidoCompras = sumConcluidos(state.compras);
         const totalConcluidoDevolucoes = sumConcluidos(state.devolucoes);
         const totalConcluidoGuardados = sumConcluidos(state.guardados);
 
-        // Subtrai do Salário Atual apenas o que foi marcado como concluído nos 4 blocos
         const totalAbatido = totalConcluidoContas + totalConcluidoCompras + totalConcluidoDevolucoes + totalConcluidoGuardados;
         const saldoAtual = (Number(state.salario) || 0) - totalAbatido;
 
@@ -582,7 +568,7 @@
         };
       }
 
-      // ---------- Renderização ----------
+      // Renderização com ordenação (não concluídos primeiro, concluídos no final)
       function renderizarCategoria(categoryKey, items, listId, emptyMessage) {
         const ul = document.getElementById(listId);
         ul.innerHTML = '';
@@ -592,7 +578,10 @@
           return;
         }
 
-        items.forEach(item => {
+        // Ordena os itens: false (não concluído) vem antes de true (concluído)
+        const sortedItems = [...items].sort((a, b) => Number(a.concluido) - Number(b.concluido));
+
+        sortedItems.forEach(item => {
           const li = document.createElement('li');
           li.className = `item ${item.concluido ? 'completed' : ''}`;
           
@@ -616,19 +605,16 @@
       function updateUI() {
         const totals = getTotals();
 
-        // Resumo superior
         document.getElementById('salarioValor').textContent = formatCurrency(state.salario);
         document.getElementById('saldoValor').textContent = formatCurrency(totals.saldoAtual);
         document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContasPendentes);
         document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalComprasPendentes);
 
-        // Totais abaixo dos títulos
         document.getElementById('totalContas').textContent = formatCurrency(totals.totalContas);
         document.getElementById('totalCompras').textContent = formatCurrency(totals.totalCompras);
         document.getElementById('totalDevolucoes').textContent = formatCurrency(totals.totalDevolucoes);
         document.getElementById('totalGuardados').textContent = formatCurrency(totals.totalGuardados);
 
-        // Cor do saldo
         const saldoEl = document.getElementById('saldoValor');
         if (totals.saldoAtual < 0) {
           saldoEl.style.color = 'var(--danger)';
@@ -636,14 +622,12 @@
           saldoEl.style.color = 'var(--success)';
         }
 
-        // Listas
         renderizarCategoria('contas', state.contas, 'listaContas', 'Nenhuma conta a pagar.');
         renderizarCategoria('compras', state.compras, 'listaCompras', 'Nenhuma compra realizada.');
         renderizarCategoria('devolucoes', state.devolucoes, 'listaDevolucoes', 'Nenhuma devolução.');
         renderizarCategoria('guardados', state.guardados, 'listaGuardados', 'Nenhum valor guardado.');
       }
 
-      // ---------- Modal ----------
       function openModal(mode, category = null) {
         modalMode = mode;
         modalCategory = category;
@@ -687,7 +671,6 @@
         modalCategory = null;
       }
 
-      // ---------- Eventos ----------
       document.getElementById('btnAlterarSalario').addEventListener('click', () => {
         openModal('salario');
       });
