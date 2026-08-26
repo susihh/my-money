@@ -33,7 +33,6 @@
       padding-bottom: 2rem;
     }
 
-    /* Cabeçalho Maior */
     header {
       background: var(--primary);
       color: white;
@@ -108,13 +107,27 @@
     .card-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 0.75rem;
+    }
+
+    .card-header-titles {
+      display: flex;
+      flex-direction: column;
     }
 
     .card-header h2 {
       font-size: 1.2rem;
       font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* Subtítulo com o valor total */
+    .card-total-header {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
     }
 
     .btn-primary {
@@ -148,7 +161,6 @@
       background: var(--primary-dark);
     }
 
-    /* Scrollbar Invisível */
     .item-list {
       list-style: none;
       flex: 1;
@@ -228,15 +240,6 @@
 
     .btn-delete:hover {
       background: #fee2e2;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.95rem;
-      font-weight: 600;
     }
 
     .formula-note {
@@ -405,53 +408,49 @@
       <!-- Contas a Pagar -->
       <div class="card category-card">
         <div class="card-header">
-          <h2>Contas a Pagar</h2>
+          <div class="card-header-titles">
+            <h2>Contas a Pagar</h2>
+            <span class="card-total-header" id="totalContas">R$ 0,00</span>
+          </div>
           <button class="btn-add" data-category="contas">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaContas"></ul>
-        <div class="card-footer">
-          <span>Soma dos valores:</span>
-          <strong id="totalContas">R$ 0,00</strong>
-        </div>
       </div>
 
       <!-- Compras Realizadas -->
       <div class="card category-card">
         <div class="card-header">
-          <h2>Compras Realizadas</h2>
+          <div class="card-header-titles">
+            <h2>Compras Realizadas</h2>
+            <span class="card-total-header" id="totalCompras">R$ 0,00</span>
+          </div>
           <button class="btn-add" data-category="compras">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaCompras"></ul>
-        <div class="card-footer">
-          <span>Soma dos valores:</span>
-          <strong id="totalCompras">R$ 0,00</strong>
-        </div>
       </div>
 
       <!-- Devolver na Caixinha -->
       <div class="card category-card">
         <div class="card-header">
-          <h2>Devolver na Caixinha</h2>
+          <div class="card-header-titles">
+            <h2>Devolver na Caixinha</h2>
+            <span class="card-total-header" id="totalDevolucoes">R$ 0,00</span>
+          </div>
           <button class="btn-add" data-category="devolucoes">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaDevolucoes"></ul>
-        <div class="card-footer">
-          <span>Soma dos valores:</span>
-          <strong id="totalDevolucoes">R$ 0,00</strong>
-        </div>
       </div>
 
       <!-- Guardar Dinheiro -->
       <div class="card category-card">
         <div class="card-header">
-          <h2>Guardar Dinheiro</h2>
+          <div class="card-header-titles">
+            <h2>Guardar Dinheiro</h2>
+            <span class="card-total-header" id="totalGuardados">R$ 0,00</span>
+          </div>
           <button class="btn-add" data-category="guardados">+Adicionar</button>
         </div>
         <ul class="item-list" id="listaGuardados"></ul>
-        <div class="card-footer">
-          <span>Soma dos valores:</span>
-          <strong id="totalGuardados">R$ 0,00</strong>
-        </div>
       </div>
     </section>
 
@@ -623,7 +622,7 @@
         document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContasPendentes);
         document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalComprasPendentes);
 
-        // Totais das seções
+        // Totais abaixo dos títulos
         document.getElementById('totalContas').textContent = formatCurrency(totals.totalContas);
         document.getElementById('totalCompras').textContent = formatCurrency(totals.totalCompras);
         document.getElementById('totalDevolucoes').textContent = formatCurrency(totals.totalDevolucoes);
@@ -707,7 +706,6 @@
         if (e.target === e.currentTarget) closeModal();
       });
 
-      // Evento de marcar como concluído
       document.addEventListener('change', (e) => {
         if (e.target.classList.contains('item-checkbox')) {
           const category = e.target.dataset.category;
