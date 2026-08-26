@@ -138,6 +138,8 @@
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
+      text-decoration: none;
+      display: inline-block;
     }
 
     .btn-primary:hover {
@@ -246,6 +248,34 @@
       margin-top: 1.5rem;
       color: var(--text-secondary);
       font-size: 0.9rem;
+    }
+
+    /* Container do Botão de Histórico Centralizado */
+    .history-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .btn-history {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-history:hover {
+      background: #0369a1;
     }
 
     /* Modal */
@@ -446,6 +476,13 @@
         <ul class="item-list" id="listaGuardados"></ul>
       </div>
     </section>
+
+    <!-- Botão de Histórico Centralizado -->
+    <div class="history-container">
+      <a href="historico.html" class="btn-history">
+        📜 Histórico de Despesas
+      </a>
+    </div>
 
     <p class="formula-note">Saldo Atual = Salário − (Itens Concluídos das 4 Categorias)</p>
   </main>
@@ -700,7 +737,6 @@
         }
       });
 
-      // Removida a mensagem de confirmação (confirm) para deletar direto
       document.addEventListener('click', (e) => {
         const btnDelete = e.target.closest('.btn-delete');
         if (btnDelete) {
