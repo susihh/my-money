@@ -568,7 +568,6 @@
         };
       }
 
-      // Renderização com ordenação (não concluídos primeiro, concluídos no final)
       function renderizarCategoria(categoryKey, items, listId, emptyMessage) {
         const ul = document.getElementById(listId);
         ul.innerHTML = '';
@@ -578,7 +577,6 @@
           return;
         }
 
-        // Ordena os itens: false (não concluído) vem antes de true (concluído)
         const sortedItems = [...items].sort((a, b) => Number(a.concluido) - Number(b.concluido));
 
         sortedItems.forEach(item => {
@@ -702,16 +700,15 @@
         }
       });
 
+      // Removida a mensagem de confirmação (confirm) para deletar direto
       document.addEventListener('click', (e) => {
         const btnDelete = e.target.closest('.btn-delete');
         if (btnDelete) {
           const category = btnDelete.dataset.category;
           const id = btnDelete.dataset.id;
-          if (confirm('Deseja remover este item?')) {
-            state[category] = state[category].filter(item => item.id !== id);
-            saveState();
-            updateUI();
-          }
+          state[category] = state[category].filter(item => item.id !== id);
+          saveState();
+          updateUI();
         }
       });
 
