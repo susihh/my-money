@@ -218,12 +218,12 @@
       flex: 1;
       max-height: 220px;
       overflow-y: auto;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE e Edge */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
     .item-list::-webkit-scrollbar {
-      display: none; /* Chrome, Safari e Opera */
+      display: none;
     }
 
     .item-list .empty {
@@ -255,7 +255,7 @@
       font-weight: 600;
     }
 
-    /* LIXEIRA OCULTA QUE APARECE APENAS NO HOVER DO ITEM */
+    /* LIXEIRA OCULTA QUE APARECE NO HOVER */
     .btn-delete {
       background: transparent;
       border: none;
@@ -279,20 +279,41 @@
       color: #dc2626;
     }
 
-    .history-container {
+    /* NOVO CARD DO HISTÓRICO LARGURA TOTAL */
+    .history-full-card {
+      margin-top: 1.2rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.75rem;
       display: flex;
-      justify-content: center;
-      margin-top: 2rem;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      user-select: none;
     }
 
-    .btn-history {
-      background: #0284c7;
-      color: white;
-      border: none;
-      padding: 0.8rem 2rem;
-      border-radius: 10px;
+    .history-full-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.12);
+    }
+
+    .history-full-card-title {
+      font-size: 1.05rem;
       font-weight: 700;
-      cursor: pointer;
+      color: var(--text);
+    }
+
+    .history-full-card-arrow {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: color 0.2s;
+    }
+
+    .history-full-card:hover .history-full-card-arrow {
+      color: var(--primary);
     }
 
     /* ESTILOS DA TELA DE HISTÓRICO */
@@ -604,10 +625,10 @@
         </div>
       </section>
 
-      <div class="history-container">
-        <button class="btn-history" id="btnIrParaHistorico">
-          📜 Histórico de Despesas
-        </button>
+      <!-- BLOCO DO HISTÓRICO (PONTA A PONTA) -->
+      <div class="history-full-card" id="btnIrParaHistorico">
+        <span class="history-full-card-title">Ir para o Histórico</span>
+        <span class="history-full-card-arrow">&gt;</span>
       </div>
     </main>
   </div>
