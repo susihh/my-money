@@ -660,7 +660,7 @@
             Salvar Mês
           </button>
         </div>
-        <p class="history-subtitle">Registre o saldo final do mês com todos os itens anotados.</p>
+        <p class="history-subtitle">Registre o saldo final do mês apenas com os itens concluídos.</p>
 
         <div id="listaHistorico"></div>
       </div>
@@ -891,7 +891,7 @@
               <div class="history-salary-info">
                 <span>💳 Salário: ${formatCurrency(entry.salario)}</span>
               </div>
-              ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item registrado.</p>'}
+              ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item concluído neste mês.</p>'}
             </div>
           `;
           container.appendChild(card);
@@ -920,7 +920,7 @@
         }
       };
 
-      // SALVAR MÊS AUTOMATICAMENTE COM VERIFICAÇÃO DE DUPLICIDADE
+      // SALVAR APENAS ITENS CONCLUÍDOS
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const agora = new Date();
         const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
@@ -930,15 +930,18 @@
         const mesAno = `${mesCapitalizado} ${ano}`;
         const totals = getTotals();
 
+        // Filtra para armazenar apenas itens onde concluido === true
+        const filterCompleted = list => JSON.parse(JSON.stringify(list.filter(item => item.concluido)));
+
         const newEntry = {
           mesAno,
           salario: state.salario || 0,
           saldoFinal: totals.saldoAtual,
           items: {
-            contas: JSON.parse(JSON.stringify(state.contas)),
-            compras: JSON.parse(JSON.stringify(state.compras)),
-            devolucoes: JSON.parse(JSON.stringify(state.devolucoes)),
-            guardados: JSON.parse(JSON.stringify(state.guardados))
+            contas: filterCompleted(state.contas),
+            compras: filterCompleted(state.compras),
+            devolucoes: filterCompleted(state.devolucoes),
+            guardados: filterCompleted(state.guardados)
           }
         };
 
@@ -947,10 +950,10 @@
 
         if (existingIndex !== -1) {
           history[existingIndex] = newEntry;
-          alert(`Histórico de ${mesAno} atualizado com sucesso!`);
+          alert(`Histórico de ${mesAno} atualizado com apenas os itens concluídos!`);
         } else {
           history.unshift(newEntry);
-          alert(`Mês de ${mesAno} salvo no histórico com sucesso!`);
+          alert(`Mês de ${mesAno} salvo com sucesso!`);
         }
 
         saveHistory(history);
