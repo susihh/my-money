@@ -660,7 +660,7 @@
             Salvar Mês
           </button>
         </div>
-        <p class="history-subtitle">Salva tudo no histórico e remove da página inicial apenas os itens concluídos.</p>
+        <p class="history-subtitle">Salva o estado atual no histórico e mantém na tela inicial os itens não concluídos.</p>
 
         <div id="listaHistorico"></div>
       </div>
@@ -918,7 +918,7 @@
         renderHistory();
       };
 
-      // SALVA TUDO NO HISTÓRICO E LIMPA DA TELA PRINCIPAL SÓ OS CONCLUÍDOS
+      // LÓGICA DE SALVAMENTO: Salva todos no histórico, porém só remove os concluídos da tela 1
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const agora = new Date();
         const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
@@ -928,9 +928,9 @@
         const mesAno = `${mesCapitalizado} ${ano}`;
         const totals = getTotals();
 
-        // Salva TUDO o que está na primeira página dentro do histórico
         const cloneList = list => JSON.parse(JSON.stringify(list));
 
+        // Registra tudo no histórico
         const newEntry = {
           mesAno,
           salario: state.salario || 0,
@@ -954,7 +954,7 @@
 
         saveHistory(history);
 
-        // Remove da Tela Principal APENAS os itens marcados como concluídos
+        // MANTÉM NA PRIMEIRA PÁGINA APENAS OS PENDENTES (!item.concluido)
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
