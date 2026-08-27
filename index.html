@@ -660,7 +660,7 @@
             Salvar Mês
           </button>
         </div>
-        <p class="history-subtitle">Registre o saldo final do mês apenas com os itens concluídos.</p>
+        <p class="history-subtitle">Salva tudo no histórico e remove da página inicial apenas os itens concluídos.</p>
 
         <div id="listaHistorico"></div>
       </div>
@@ -891,7 +891,7 @@
               <div class="history-salary-info">
                 <span>💳 Salário: ${formatCurrency(entry.salario)}</span>
               </div>
-              ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item concluído neste mês.</p>'}
+              ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item neste mês.</p>'}
             </div>
           `;
           container.appendChild(card);
@@ -918,7 +918,7 @@
         renderHistory();
       };
 
-      // SALVA NO HISTÓRICO APENAS CONCLUÍDOS E ZERA DA TELA PRINCIPAL (MANTÉM APENAS PENDENTES)
+      // SALVA TUDO NO HISTÓRICO E LIMPA DA TELA PRINCIPAL SÓ OS CONCLUÍDOS
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const agora = new Date();
         const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
@@ -928,18 +928,18 @@
         const mesAno = `${mesCapitalizado} ${ano}`;
         const totals = getTotals();
 
-        // Extrai apenas os itens marcados como concluídos para o histórico
-        const filterCompleted = list => JSON.parse(JSON.stringify(list.filter(item => item.concluido)));
+        // Salva TUDO o que está na primeira página dentro do histórico
+        const cloneList = list => JSON.parse(JSON.stringify(list));
 
         const newEntry = {
           mesAno,
           salario: state.salario || 0,
           saldoFinal: totals.saldoAtual,
           items: {
-            contas: filterCompleted(state.contas),
-            compras: filterCompleted(state.compras),
-            devolucoes: filterCompleted(state.devolucoes),
-            guardados: filterCompleted(state.guardados)
+            contas: cloneList(state.contas),
+            compras: cloneList(state.compras),
+            devolucoes: cloneList(state.devolucoes),
+            guardados: cloneList(state.guardados)
           }
         };
 
@@ -954,7 +954,7 @@
 
         saveHistory(history);
 
-        // Remove os concluídos do estado atual (deixando apenas os pendentes na página principal)
+        // Remove da Tela Principal APENAS os itens marcados como concluídos
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
