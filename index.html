@@ -212,11 +212,18 @@
       background: var(--primary-light);
     }
 
+    /* ESCONDER A SCROLLBAR MANTENDO A ROLAGEM */
     .item-list {
       list-style: none;
       flex: 1;
       max-height: 220px;
       overflow-y: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE e Edge */
+    }
+
+    .item-list::-webkit-scrollbar {
+      display: none; /* Chrome, Safari e Opera */
     }
 
     .item-list .empty {
@@ -248,17 +255,28 @@
       font-weight: 600;
     }
 
+    /* LIXEIRA OCULTA QUE APARECE APENAS NO HOVER DO ITEM */
     .btn-delete {
       background: transparent;
       border: none;
       color: var(--danger);
       cursor: pointer;
       padding: 0.2rem;
-      opacity: 0.6;
+      opacity: 0;
+      visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .item:hover .btn-delete {
+      opacity: 1;
+      visibility: visible;
     }
 
     .btn-delete:hover {
-      opacity: 1;
+      color: #dc2626;
     }
 
     .history-container {
@@ -777,7 +795,9 @@
             <input type="checkbox" class="item-checkbox" data-category="${categoryKey}" data-id="${item.id}" ${item.concluido ? 'checked' : ''}>
             <span class="item-desc">${escapeHtml(item.descricao)}</span>
             <span class="item-valor">${formatCurrency(item.valor)}</span>
-            <button class="btn-delete" data-category="${categoryKey}" data-id="${item.id}" title="Remover">&times;</button>
+            <button class="btn-delete" data-category="${categoryKey}" data-id="${item.id}" title="Excluir">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </button>
           `;
           ul.appendChild(li);
         });
@@ -847,7 +867,7 @@
                 <div class="history-saldo-badge">
                   <span>↗</span> ${formatCurrency(entry.saldoFinal)}
                 </div>
-                <button class="btn-delete" style="opacity:1;" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
+                <button class="btn-delete" style="opacity:1; visibility:visible;" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
