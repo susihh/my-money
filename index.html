@@ -912,15 +912,13 @@
 
       window.deleteHistoryEntry = function(event, index) {
         event.stopPropagation();
-        if (confirm('Deseja excluir este registro do histórico?')) {
-          const history = loadHistory();
-          history.splice(index, 1);
-          saveHistory(history);
-          renderHistory();
-        }
+        const history = loadHistory();
+        history.splice(index, 1);
+        saveHistory(history);
+        renderHistory();
       };
 
-      // SALVAR APENAS ITENS CONCLUÍDOS
+      // SALVAR AUTOMATICAMENTE SEM POPUP/ALERT
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const agora = new Date();
         const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
@@ -930,7 +928,6 @@
         const mesAno = `${mesCapitalizado} ${ano}`;
         const totals = getTotals();
 
-        // Filtra para armazenar apenas itens onde concluido === true
         const filterCompleted = list => JSON.parse(JSON.stringify(list.filter(item => item.concluido)));
 
         const newEntry = {
@@ -950,10 +947,8 @@
 
         if (existingIndex !== -1) {
           history[existingIndex] = newEntry;
-          alert(`Histórico de ${mesAno} atualizado com apenas os itens concluídos!`);
         } else {
           history.unshift(newEntry);
-          alert(`Mês de ${mesAno} salvo com sucesso!`);
         }
 
         saveHistory(history);
@@ -1029,11 +1024,11 @@
         const valor = parseCurrency(document.getElementById('inputValor').value);
 
         if (modalMode === 'salario') {
-          if (valor < 0) return alert('Informe um valor válido.');
+          if (valor < 0) return;
           state.salario = valor;
         } else if (modalMode === 'item' && modalCategory) {
           const descricao = document.getElementById('inputDescricao').value.trim() || 'Sem descrição';
-          if (valor <= 0) return alert('Informe um valor maior que zero.');
+          if (valor <= 0) return;
 
           state[modalCategory].push({
             id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
