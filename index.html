@@ -918,7 +918,7 @@
         renderHistory();
       };
 
-      // SALVAR AUTOMATICAMENTE SEM POPUP/ALERT
+      // SALVA NO HISTÓRICO APENAS CONCLUÍDOS E ZERA DA TELA PRINCIPAL (MANTÉM APENAS PENDENTES)
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const agora = new Date();
         const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
@@ -928,6 +928,7 @@
         const mesAno = `${mesCapitalizado} ${ano}`;
         const totals = getTotals();
 
+        // Extrai apenas os itens marcados como concluídos para o histórico
         const filterCompleted = list => JSON.parse(JSON.stringify(list.filter(item => item.concluido)));
 
         const newEntry = {
@@ -952,6 +953,15 @@
         }
 
         saveHistory(history);
+
+        // Remove os concluídos do estado atual (deixando apenas os pendentes na página principal)
+        state.contas = state.contas.filter(item => !item.concluido);
+        state.compras = state.compras.filter(item => !item.concluido);
+        state.devolucoes = state.devolucoes.filter(item => !item.concluido);
+        state.guardados = state.guardados.filter(item => !item.concluido);
+
+        saveState();
+        updateUI();
         renderHistory();
       });
 
