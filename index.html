@@ -918,7 +918,7 @@
         renderHistory();
       };
 
-      // LÓGICA DE SALVAMENTO: Salva todos no histórico, porém só remove os concluídos da tela 1
+      // LÓGICA DE SALVAMENTO ACUMULATIVA (Não apaga registros antigos se salvar mais de uma vez)
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const agora = new Date();
         const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
@@ -930,25 +930,44 @@
 
         const cloneList = list => JSON.parse(JSON.stringify(list));
 
-        // Registra tudo no histórico
-        const newEntry = {
-          mesAno,
-          salario: state.salario || 0,
-          saldoFinal: totals.saldoAtual,
-          items: {
-            contas: cloneList(state.contas),
-            compras: cloneList(state.compras),
-            devolucoes: cloneList(state.devolucoes),
-            guardados: cloneList(state.guardados)
-          }
-        };
-
         let history = loadHistory();
         const existingIndex = history.findIndex(item => item.mesAno === mesAno);
 
+        const novosItens = {
+          contas: cloneList(state.contas),
+          compras: cloneList(state.compras),
+          devolucoes: cloneList(state.devolucoes),
+          guardados: cloneList(state.guardados)
+        };
+
         if (existingIndex !== -1) {
-          history[existingIndex] = newEntry;
+          const antigo = history[existingIndex].items;
+
+          const mesclar = (antigos = [], novos = []) => {
+            const mapa = new Map();
+            antigos.forEach(item => mapa.set(item.id, item));
+            novos.forEach(item => mapa.set(item.id, item));
+            return Array.from(mapa.values());
+          };
+
+          history[existingIndex] = {
+            mesAno,
+            salario: state.salario || 0,
+            saldoFinal: totals.saldoAtual,
+            items: {
+              contas: mesclar(antigo.contas, novosItens.contas),
+              compras: mesclar(antigo.compras, novosItens.compras),
+              devolucoes: mesclar(antigo.devolucoes, novosItens.devolucoes),
+              guardados: mesclar(antigo.guardados, novosItens.guardados)
+            }
+          };
         } else {
+          const newEntry = {
+            mesAno,
+            salario: state.salario || 0,
+            saldoFinal: totals.saldoAtual,
+            items: novosItens
+          };
           history.unshift(newEntry);
         }
 
