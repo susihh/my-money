@@ -9,7 +9,7 @@
       --primary: #6b21a8;
       --primary-light: #7e22ce;
       --primary-bg: #f3e8ff;
-      --bg: #f3e8ff; /* Lilás bem claro */
+      --bg: #f3e8ff;
       --card-bg: #ffffff;
       --text: #1e1b4b;
       --text-secondary: #6b7280;
@@ -212,7 +212,6 @@
       background: var(--primary-light);
     }
 
-    /* ESCONDER A SCROLLBAR MANTENDO A ROLAGEM */
     .item-list {
       list-style: none;
       flex: 1;
@@ -255,7 +254,6 @@
       font-weight: 600;
     }
 
-    /* LIXEIRA OCULTA QUE APARECE NO HOVER */
     .btn-delete {
       background: transparent;
       border: none;
@@ -279,7 +277,6 @@
       color: #dc2626;
     }
 
-    /* NOVO CARD DO HISTÓRICO LARGURA TOTAL */
     .history-full-card {
       margin-top: 1.2rem;
       background: var(--card-bg);
@@ -316,7 +313,6 @@
       color: var(--primary);
     }
 
-    /* ESTILOS DA TELA DE HISTÓRICO */
     .history-card-header {
       display: flex;
       justify-content: space-between;
@@ -466,7 +462,6 @@
       color: #6b21a8;
     }
 
-    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -548,7 +543,7 @@
 </head>
 <body>
 
-  <!-- ================= TELA PRINCIPAL ================= -->
+  <!-- TELA PRINCIPAL -->
   <div id="pageMain" class="page-section active-page">
     <header>
       <div class="header-content">
@@ -625,7 +620,6 @@
         </div>
       </section>
 
-      <!-- BLOCO DO HISTÓRICO (PONTA A PONTA) -->
       <div class="history-full-card" id="btnIrParaHistorico">
         <span class="history-full-card-title">Ir para o Histórico</span>
         <span class="history-full-card-arrow">&gt;</span>
@@ -633,7 +627,7 @@
     </main>
   </div>
 
-  <!-- ================= TELA DE HISTÓRICO ================= -->
+  <!-- TELA DE HISTÓRICO -->
   <div id="pageHistory" class="page-section">
     <header>
       <div class="header-content">
@@ -926,10 +920,14 @@
         }
       };
 
+      // SALVAR MÊS AUTOMATICAMENTE COM VERIFICAÇÃO DE DUPLICIDADE
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
-        const mesAno = prompt('Digite o mês/ano de referência (ex: Agosto 2026):');
-        if (!mesAno) return;
-
+        const agora = new Date();
+        const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
+        const mesCapitalizado = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
+        const ano = agora.getFullYear();
+        
+        const mesAno = `${mesCapitalizado} ${ano}`;
         const totals = getTotals();
 
         const newEntry = {
@@ -944,11 +942,19 @@
           }
         };
 
-        const history = loadHistory();
-        history.unshift(newEntry);
+        let history = loadHistory();
+        const existingIndex = history.findIndex(item => item.mesAno === mesAno);
+
+        if (existingIndex !== -1) {
+          history[existingIndex] = newEntry;
+          alert(`Histórico de ${mesAno} atualizado com sucesso!`);
+        } else {
+          history.unshift(newEntry);
+          alert(`Mês de ${mesAno} salvo no histórico com sucesso!`);
+        }
+
         saveHistory(history);
         renderHistory();
-        alert('Mês salvo no histórico com sucesso!');
       });
 
       function openModal(mode, category = null) {
