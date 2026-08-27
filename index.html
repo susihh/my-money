@@ -37,7 +37,9 @@
     header {
       background: var(--primary);
       color: white;
-      padding: 2.5rem 0 4.5rem 0;
+      padding: 2.5rem 0 5rem 0;
+      position: relative;
+      z-index: 1;
     }
 
     .header-content {
@@ -89,13 +91,8 @@
 
     .container {
       max-width: 1100px;
-      margin: 0 auto;
+      margin: -3.5rem auto 0 auto;
       padding: 1.5rem;
-    }
-
-    /* Sobreposição dos cards sobre o cabeçalho roxo nas duas páginas */
-    .container {
-      margin-top: -3.5rem;
       position: relative;
       z-index: 10;
     }
@@ -176,11 +173,29 @@
       border-radius: 12px;
       font-weight: 600;
       cursor: pointer;
+      position: relative;
+      z-index: 20;
       transition: background 0.2s;
     }
 
     .btn-primary:hover {
       background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-add {
+      background: var(--primary-light);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+      background: var(--primary);
     }
 
     .btn-modal-save {
@@ -195,17 +210,6 @@
 
     .btn-modal-save:hover {
       background: var(--primary-light);
-    }
-
-    .btn-add {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
     }
 
     .item-list {
@@ -322,7 +326,6 @@
       background: var(--primary);
     }
 
-    /* ACCORDION DO HISTÓRICO */
     .history-month-card {
       background: #fafafa;
       border: 1px solid #f3f4f6;
@@ -435,6 +438,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s;
+      z-index: 9999;
     }
 
     .modal-overlay.active {
@@ -655,7 +659,7 @@
   </div>
 
   <script>
-    (function() {
+    document.addEventListener('DOMContentLoaded', () => {
       const STORAGE_KEY = 'gestaoFinanceiraData';
       const HISTORY_KEY = 'gestaoFinanceiraHistorico';
 
@@ -921,12 +925,12 @@
         if (mode === 'salario') {
           title.textContent = 'Alterar Salário';
           campoDescricao.style.display = 'none';
-          inputValor.value = formatCurrency(state.salario).replace('R$', '').trim();
-          inputValor.focus();
+          inputValor.value = state.salario ? state.salario.toString() : '';
+          setTimeout(() => inputValor.focus(), 100);
         } else {
           title.textContent = 'Adicionar Item';
           campoDescricao.style.display = 'block';
-          inputDescricao.focus();
+          setTimeout(() => inputDescricao.focus(), 100);
         }
 
         overlay.classList.add('active');
@@ -940,7 +944,9 @@
 
       document.addEventListener('click', (e) => {
         const btnAdd = e.target.closest('.btn-add');
-        if (btnAdd) openModal('item', btnAdd.dataset.category);
+        if (btnAdd) {
+          openModal('item', btnAdd.dataset.category);
+        }
 
         const btnDelete = e.target.closest('.btn-delete');
         if (btnDelete && btnDelete.dataset.category) {
@@ -993,7 +999,7 @@
       });
 
       updateUI();
-    })();
+    });
   </script>
 </body>
 </html>
