@@ -446,11 +446,6 @@
       font-weight: 500;
     }
 
-    .history-item-desc.completed {
-      text-decoration: line-through;
-      color: #9ca3af;
-    }
-
     .history-item-tag {
       color: #9ca3af;
       font-size: 0.8rem;
@@ -557,7 +552,7 @@
     <main class="container">
       <section class="summary-grid">
         <div class="card summary-card">
-          <h3>Salário</h3>
+          <h3>Salário Base</h3>
           <p class="value" id="salarioValor">R$ 0,00</p>
         </div>
         <div class="card summary-card">
@@ -660,7 +655,7 @@
             Salvar Mês
           </button>
         </div>
-        <p class="history-subtitle">Salva o estado atual no histórico e mantém na tela inicial os itens não concluídos.</p>
+        <p class="history-subtitle">Salva apenas os itens concluídos no histórico e acumula o saldo restante para o novo ciclo.</p>
 
         <div id="listaHistorico"></div>
       </div>
@@ -698,6 +693,7 @@
 
       const DEFAULT_STATE = {
         salario: 0,
+        saldoAcumulado: 0,
         contas: [],
         compras: [],
         devolucoes: [],
@@ -783,11 +779,13 @@
         const totalComprasPendentes = sumPendentes(state.compras);
 
         const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
-        const saldoAtual = (Number(state.salario) || 0) - totalConcluido;
+        
+        // Saldo disponível = (Salário Base + Saldo Acumulado dos meses anteriores) - itens Concluídos
+        const saldoAtual = (Number(state.salario) || 0) + (Number(state.saldoAcumulado) || 0) - totalConcluido;
 
         return {
           totalContas, totalCompras, totalDevolucoes, totalGuardados,
-          totalContasPendentes, totalComprasPendentes, saldoAtual
+          totalContasPendentes, totalComprasPendentes, saldoAtual, totalConcluido
         };
       }
 
@@ -821,7 +819,7 @@
       function updateUI() {
         const totals = getTotals();
 
-        document.getElementById('salarioValor').textContent = formatCurrency(state.salario);
+        document.getElementById('salarioValor').textContent = formatCurrency((state.salario || 0) + (state.saldoAcumulado || 0));
         document.getElementById('saldoValor').textContent = formatCurrency(totals.saldoAtual);
         document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContasPendentes);
         document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalComprasPendentes);
@@ -864,7 +862,7 @@
               <div class="history-item-row">
                 <div class="history-item-left">
                   <span class="bullet bullet-${item.cat}"></span>
-                  <span class="history-item-desc ${item.concluido ? 'completed' : ''}">${escapeHtml(item.descricao)}</span>
+                  <span class="history-item-desc">${escapeHtml(item.descricao)}</span>
                   <span class="history-item-tag">${item.label}</span>
                 </div>
                 <span class="history-item-val">${formatCurrency(item.valor)}</span>
@@ -883,15 +881,15 @@
                   <span>↗</span> ${formatCurrency(entry.saldoFinal)}
                 </div>
                 <button class="btn-delete" style="opacity:1; visibility:visible;" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
             </div>
             <div class="history-month-body" id="body-${index}">
               <div class="history-salary-info">
-                <span>💳 Salário: ${formatCurrency(entry.salario)}</span>
+                <span>💳 Salário/Recursos no Momento: ${formatCurrency(entry.salario)}</span>
               </div>
-              ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item neste mês.</p>'}
+              ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item concluído neste registro.</p>'}
             </div>
           `;
           container.appendChild(card);
@@ -918,62 +916,54 @@
         renderHistory();
       };
 
-      // LÓGICA DE SALVAMENTO ACUMULATIVA (Não apaga registros antigos se salvar mais de uma vez)
+      // NOVA LÓGICA DE SALVAMENTO DE MÊS
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
+        const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
+        
+        const itensConcluidos = {
+          contas: filterConcluidos(state.contas),
+          compras: filterConcluidos(state.compras),
+          devolucoes: filterConcluidos(state.devolucoes),
+          guardados: filterConcluidos(state.guardados)
+        };
+
+        const totalConcluido = [
+          ...itensConcluidos.contas,
+          ...itensConcluidos.compras,
+          ...itensConcluidos.devolucoes,
+          ...itensConcluidos.guardados
+        ].reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+
+        // Verifica se há algo concluído para salvar
+        if (totalConcluido === 0) {
+          alert('Nenhum item marcado como concluído para salvar no histórico.');
+          return;
+        }
+
         const agora = new Date();
         const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
         const mesCapitalizado = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
         const ano = agora.getFullYear();
-        
         const mesAno = `${mesCapitalizado} ${ano}`;
-        const totals = getTotals();
 
-        const cloneList = list => JSON.parse(JSON.stringify(list));
+        const saldoRestanteDoCiclo = getTotals().saldoAtual;
 
+        // Cria SEMPRE um novo registro no histórico para o mês, mantendo separados os envios subsequentes
         let history = loadHistory();
-        const existingIndex = history.findIndex(item => item.mesAno === mesAno);
-
-        const novosItens = {
-          contas: cloneList(state.contas),
-          compras: cloneList(state.compras),
-          devolucoes: cloneList(state.devolucoes),
-          guardados: cloneList(state.guardados)
+        const newEntry = {
+          id: Date.now(),
+          mesAno,
+          salario: (state.salario || 0) + (state.saldoAcumulado || 0),
+          saldoFinal: saldoRestanteDoCiclo,
+          items: itensConcluidos
         };
-
-        if (existingIndex !== -1) {
-          const antigo = history[existingIndex].items;
-
-          const mesclar = (antigos = [], novos = []) => {
-            const mapa = new Map();
-            antigos.forEach(item => mapa.set(item.id, item));
-            novos.forEach(item => mapa.set(item.id, item));
-            return Array.from(mapa.values());
-          };
-
-          history[existingIndex] = {
-            mesAno,
-            salario: state.salario || 0,
-            saldoFinal: totals.saldoAtual,
-            items: {
-              contas: mesclar(antigo.contas, novosItens.contas),
-              compras: mesclar(antigo.compras, novosItens.compras),
-              devolucoes: mesclar(antigo.devolucoes, novosItens.devolucoes),
-              guardados: mesclar(antigo.guardados, novosItens.guardados)
-            }
-          };
-        } else {
-          const newEntry = {
-            mesAno,
-            salario: state.salario || 0,
-            saldoFinal: totals.saldoAtual,
-            items: novosItens
-          };
-          history.unshift(newEntry);
-        }
-
+        history.unshift(newEntry);
         saveHistory(history);
 
-        // MANTÉM NA PRIMEIRA PÁGINA APENAS OS PENDENTES (!item.concluido)
+        // O valor que sobrou (saldoRestanteDoCiclo) passa a somar com o novo saldo disponível
+        state.saldoAcumulado = saldoRestanteDoCiclo;
+
+        // Limpa a tela principal zerando os itens concluídos e preservando os NÃO CONCLUÍDOS com seus valores
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
@@ -997,7 +987,7 @@
         document.getElementById('formModal').reset();
 
         if (mode === 'salario') {
-          title.textContent = 'Alterar Salário';
+          title.textContent = 'Alterar Salário Base';
           campoDescricao.style.display = 'none';
           inputValor.value = state.salario ? state.salario.toString() : '';
           setTimeout(() => inputValor.focus(), 100);
