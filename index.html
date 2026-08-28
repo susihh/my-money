@@ -254,6 +254,7 @@
       font-weight: 600;
     }
 
+    /* Estilo padronizado para o botão de apagar (Lixeira) */
     .btn-delete {
       background: transparent;
       border: none;
@@ -268,7 +269,8 @@
       transition: opacity 0.2s, visibility 0.2s;
     }
 
-    .item:hover .btn-delete {
+    .item:hover .btn-delete,
+    .history-month-header:hover .btn-delete {
       opacity: 1;
       visibility: visible;
     }
@@ -401,10 +403,12 @@
       gap: 0.2rem;
     }
 
+    /* Conteúdo do histórico oculto por padrão */
     .history-month-body {
       padding: 0.5rem 1.2rem 1.2rem 1.2rem;
       border-top: 1px dashed #e5e7eb;
       background: #ffffff;
+      display: none;
     }
 
     .history-salary-info {
@@ -780,7 +784,7 @@
 
         const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
         
-        // Saldo disponível = (Salário Base + Saldo Acumulado dos meses anteriores) - itens Concluídos
+        // Saldo disponível = (Salário Base Fixo + Sobra de Meses Anteriores) - Gastos Concluídos do Mês Atual
         const saldoAtual = (Number(state.salario) || 0) + (Number(state.saldoAcumulado) || 0) - totalConcluido;
 
         return {
@@ -819,7 +823,8 @@
       function updateUI() {
         const totals = getTotals();
 
-        document.getElementById('salarioValor').textContent = formatCurrency((state.salario || 0) + (state.saldoAcumulado || 0));
+        // O Salário Base reflete exatamente o valor definido pelo usuário sem ser somado na exibição principal
+        document.getElementById('salarioValor').textContent = formatCurrency(state.salario || 0);
         document.getElementById('saldoValor').textContent = formatCurrency(totals.saldoAtual);
         document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContasPendentes);
         document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalComprasPendentes);
@@ -873,15 +878,15 @@
           card.innerHTML = `
             <div class="history-month-header" onclick="toggleMonth(${index})">
               <div class="history-month-title">
-                <span id="arrow-${index}">^</span>
+                <span id="arrow-${index}">v</span>
                 <span>${escapeHtml(entry.mesAno)}</span>
               </div>
               <div class="history-month-right">
                 <div class="history-saldo-badge">
                   <span>↗</span> ${formatCurrency(entry.saldoFinal)}
                 </div>
-                <button class="btn-delete" style="opacity:1; visibility:visible;" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012 2v2"/></svg>
+                <button class="btn-delete" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
             </div>
@@ -896,15 +901,16 @@
         });
       }
 
+      // Função para ocultar/exibir itens ao clicar na seta
       window.toggleMonth = function(index) {
         const body = document.getElementById(`body-${index}`);
         const arrow = document.getElementById(`arrow-${index}`);
-        if (body.style.display === 'none') {
-          body.style.display = 'block';
-          arrow.textContent = '^';
-        } else {
+        if (body.style.display === 'block') {
           body.style.display = 'none';
           arrow.textContent = 'v';
+        } else {
+          body.style.display = 'block';
+          arrow.textContent = '^';
         }
       };
 
@@ -916,7 +922,7 @@
         renderHistory();
       };
 
-      // NOVA LÓGICA DE SALVAMENTO DE MÊS
+      // SALVAR MÊS (Virada de mês)
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
         
@@ -934,7 +940,6 @@
           ...itensConcluidos.guardados
         ].reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
 
-        // Verifica se há algo concluído para salvar
         if (totalConcluido === 0) {
           alert('Nenhum item marcado como concluído para salvar no histórico.');
           return;
@@ -948,7 +953,6 @@
 
         const saldoRestanteDoCiclo = getTotals().saldoAtual;
 
-        // Cria SEMPRE um novo registro no histórico para o mês, mantendo separados os envios subsequentes
         let history = loadHistory();
         const newEntry = {
           id: Date.now(),
@@ -960,10 +964,10 @@
         history.unshift(newEntry);
         saveHistory(history);
 
-        // O valor que sobrou (saldoRestanteDoCiclo) passa a somar com o novo saldo disponível
+        // Somente na virada de mês (ao salvar) o saldo restante é acumulado para somar com o salário no próximo mês
         state.saldoAcumulado = saldoRestanteDoCiclo;
 
-        // Limpa a tela principal zerando os itens concluídos e preservando os NÃO CONCLUÍDOS com seus valores
+        // Limpa a tela principal zerando apenas os itens que foram concluídos
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
@@ -1044,7 +1048,7 @@
 
         if (modalMode === 'salario') {
           if (valor < 0) return;
-          state.salario = valor;
+          state.salario = valor; // Salário mantido fixo até edição explícita
         } else if (modalMode === 'item' && modalCategory) {
           const descricao = document.getElementById('inputDescricao').value.trim() || 'Sem descrição';
           if (valor <= 0) return;
