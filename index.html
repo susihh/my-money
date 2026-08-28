@@ -547,7 +547,7 @@
         <div class="header-text">
           <h1>💰 Gestão Financeira</h1>
         </div>
-        <button class="btn-primary" id="btnAlterarSalario">Configurar Salário</button>
+        <button class="btn-primary" id="btnAlterarSalario">Alterar Salário</button>
       </div>
     </header>
 
@@ -652,12 +652,12 @@
             </div>
             <h2>Histórico Mensal</h2>
           </div>
-          <button class="btn-save-purple" id="btnSalvarMesManualmente">
+          <button class="btn-save-purple" id="btnSalvarMes">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Fechar Mês Manualmente
+            Salvar Mês
           </button>
         </div>
-        <p class="history-subtitle">O fechamento ocorre automaticamente no 5º dia útil. Use o botão acima apenas se quiser forçar o salvamento antes.</p>
+        <p class="history-subtitle">Salva apenas os itens concluídos no histórico e acumula o saldo restante para o novo ciclo.</p>
 
         <div id="listaHistorico"></div>
       </div>
@@ -694,9 +694,7 @@
       const HISTORY_KEY = 'gestaoFinanceiraHistorico';
 
       const DEFAULT_STATE = {
-        salarioBase: 0, 
-        sobraMesAnterior: 0,
-        ultimoMesProcessado: null, 
+        salario: 0,
         contas: [],
         compras: [],
         devolucoes: [],
@@ -768,71 +766,6 @@
         return div.innerHTML;
       }
 
-      function getDiaUtilAtual() {
-        const hoje = new Date();
-        const ano = hoje.getFullYear();
-        const mes = hoje.getMonth();
-        const diaHoje = hoje.getDate();
-
-        let diasUteisContados = 0;
-        for (let d = 1; d <= diaHoje; d++) {
-          const dataAux = new Date(ano, mes, d);
-          const diaSemana = dataAux.getDay();
-          if (diaSemana !== 0 && diaSemana !== 6) {
-            diasUteisContados++;
-          }
-        }
-        return diasUteisContados;
-      }
-
-      function verificarEProcessarViradaDeMes() {
-        const hoje = new Date();
-        const chaveMesAnoAtual = `${hoje.getFullYear()}-${hoje.getMonth() + 1}`;
-        const diaUtilAtual = getDiaUtilAtual();
-
-        if (diaUtilAtual >= 5 && state.ultimoMesProcessado !== chaveMesAnoAtual) {
-          executarViradaDeMes(chaveMesAnoAtual);
-        }
-      }
-
-      function executarViradaDeMes(chaveMesAnoAtual) {
-        const totals = getTotals();
-        const sobraAtual = totals.saldoAtual;
-
-        const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
-        const itensConcluidos = {
-          contas: filterConcluidos(state.contas),
-          compras: filterConcluidos(state.compras),
-          devolucoes: filterConcluidos(state.devolucoes),
-          guardados: filterConcluidos(state.guardados)
-        };
-
-        const agora = new Date();
-        const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
-        const mesCapitalizado = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
-        const mesAnoFormatado = `${mesCapitalizado} ${agora.getFullYear()}`;
-
-        let history = loadHistory();
-        history.unshift({
-          id: Date.now(),
-          mesAno: mesAnoFormatado,
-          salario: state.salarioBase,
-          saldoFinal: sobraAtual,
-          items: itensConcluidos
-        });
-        saveHistory(history);
-
-        state.sobraMesAnterior = Math.max(0, sobraAtual);
-        state.ultimoMesProcessado = chaveMesAnoAtual;
-
-        state.contas = state.contas.filter(item => !item.concluido);
-        state.compras = state.compras.filter(item => !item.concluido);
-        state.devolucoes = state.devolucoes.filter(item => !item.concluido);
-        state.guardados = state.guardados.filter(item => !item.concluido);
-
-        saveState();
-      }
-
       function getTotals() {
         const sum = arr => arr.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
         const sumConcluidos = arr => arr.filter(item => item.concluido).reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
@@ -847,13 +780,13 @@
         const totalComprasPendentes = sumPendentes(state.compras);
 
         const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
-
-        const receitaDisponivel = (Number(state.salarioBase) || 0) + (Number(state.sobraMesAnterior) || 0);
-        const saldoAtual = receitaDisponivel - totalConcluido;
+        
+        // Saldo Atual calcula apenas o mês vigente: Salário Base Fixo - Gastos Concluídos Atuais
+        const saldoAtual = (Number(state.salario) || 0) - totalConcluido;
 
         return {
           totalContas, totalCompras, totalDevolucoes, totalGuardados,
-          totalContasPendentes, totalComprasPendentes, saldoAtual, totalConcluido, receitaDisponivel
+          totalContasPendentes, totalComprasPendentes, saldoAtual, totalConcluido
         };
       }
 
@@ -885,10 +818,9 @@
       }
 
       function updateUI() {
-        verificarEProcessarViradaDeMes();
         const totals = getTotals();
 
-        document.getElementById('salarioValor').textContent = formatCurrency(totals.receitaDisponivel);
+        document.getElementById('salarioValor').textContent = formatCurrency(state.salario || 0);
         document.getElementById('saldoValor').textContent = formatCurrency(totals.saldoAtual);
         document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContasPendentes);
         document.getElementById('comprasTotalTopo').textContent = formatCurrency(totals.totalComprasPendentes);
@@ -950,13 +882,13 @@
                   <span>↗</span> ${formatCurrency(entry.saldoFinal)}
                 </div>
                 <button class="btn-delete" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012 2v2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
             </div>
             <div class="history-month-body" id="body-${index}">
               <div class="history-salary-info">
-                <span>💳 Salário Base: ${formatCurrency(entry.salario)}</span>
+                <span>💳 Salário Base do Mês: ${formatCurrency(entry.salario)}</span>
               </div>
               ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item concluído neste registro.</p>'}
             </div>
@@ -977,30 +909,68 @@
         }
       };
 
-      // Exclui o item do histórico e reinicia automaticamente os cálculos da página principal
       window.deleteHistoryEntry = function(event, index) {
         event.stopPropagation();
         const history = loadHistory();
         history.splice(index, 1);
         saveHistory(history);
-
-        // Recalcula o estado para a página principal reiniciar os valores do mês
-        if (history.length > 0) {
-          state.sobraMesAnterior = history[0].saldoFinal || 0;
-        } else {
-          state.sobraMesAnterior = 0;
-          state.ultimoMesProcessado = null;
-        }
-
-        saveState();
-        updateUI();
         renderHistory();
       };
 
-      document.getElementById('btnSalvarMesManualmente').addEventListener('click', () => {
-        const hoje = new Date();
-        const chaveMesAnoAtual = `${hoje.getFullYear()}-${hoje.getMonth() + 1}`;
-        executarViradaDeMes(chaveMesAnoAtual);
+      // MUDANÇA DE MÊS: Salva o mês atual e injeta a sobra no Salário Base do próximo ciclo
+      document.getElementById('btnSalvarMes').addEventListener('click', () => {
+        const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
+        
+        const itensConcluidos = {
+          contas: filterConcluidos(state.contas),
+          compras: filterConcluidos(state.compras),
+          devolucoes: filterConcluidos(state.devolucoes),
+          guardados: filterConcluidos(state.guardados)
+        };
+
+        const totalConcluido = [
+          ...itensConcluidos.contas,
+          ...itensConcluidos.compras,
+          ...itensConcluidos.devolucoes,
+          ...itensConcluidos.guardados
+        ].reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+
+        if (totalConcluido === 0) {
+          alert('Nenhum item marcado como concluído para salvar no histórico.');
+          return;
+        }
+
+        const agora = new Date();
+        const nomeMes = agora.toLocaleDateString('pt-BR', { month: 'long' });
+        const mesCapitalizado = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
+        const ano = agora.getFullYear();
+        const mesAno = `${mesCapitalizado} ${ano}`;
+
+        const saldoRestanteDoCiclo = getTotals().saldoAtual;
+
+        let history = loadHistory();
+        const newEntry = {
+          id: Date.now(),
+          mesAno,
+          salario: state.salario || 0,
+          saldoFinal: saldoRestanteDoCiclo,
+          items: itensConcluidos
+        };
+        history.unshift(newEntry);
+        saveHistory(history);
+
+        // Ao mudar de mês, a sobra do mês anterior é somada ao Salário do novo ciclo
+        if (saldoRestanteDoCiclo > 0) {
+          state.salario = (Number(state.salario) || 0) + saldoRestanteDoCiclo;
+        }
+
+        // Limpa os itens concluídos para dar início ao novo mês
+        state.contas = state.contas.filter(item => !item.concluido);
+        state.compras = state.compras.filter(item => !item.concluido);
+        state.devolucoes = state.devolucoes.filter(item => !item.concluido);
+        state.guardados = state.guardados.filter(item => !item.concluido);
+
+        saveState();
         updateUI();
         renderHistory();
       });
@@ -1018,9 +988,9 @@
         document.getElementById('formModal').reset();
 
         if (mode === 'salario') {
-          title.textContent = 'Configurar Salário Base';
+          title.textContent = 'Alterar Salário Base';
           campoDescricao.style.display = 'none';
-          inputValor.value = state.salarioBase ? state.salarioBase.toString() : '';
+          inputValor.value = state.salario ? state.salario.toString() : '';
           setTimeout(() => inputValor.focus(), 100);
         } else {
           title.textContent = 'Adicionar Item';
@@ -1075,7 +1045,7 @@
 
         if (modalMode === 'salario') {
           if (valor < 0) return;
-          state.salarioBase = valor;
+          state.salario = valor;
         } else if (modalMode === 'item' && modalCategory) {
           const descricao = document.getElementById('inputDescricao').value.trim() || 'Sem descrição';
           if (valor <= 0) return;
