@@ -254,7 +254,6 @@
       font-weight: 600;
     }
 
-    /* Estilo padronizado para o botão de apagar (Lixeira) */
     .btn-delete {
       background: transparent;
       border: none;
@@ -403,7 +402,6 @@
       gap: 0.2rem;
     }
 
-    /* Conteúdo do histórico oculto por padrão */
     .history-month-body {
       padding: 0.5rem 1.2rem 1.2rem 1.2rem;
       border-top: 1px dashed #e5e7eb;
@@ -784,7 +782,6 @@
 
         const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
         
-        // Saldo disponível = (Salário Base Fixo + Sobra de Meses Anteriores) - Gastos Concluídos do Mês Atual
         const saldoAtual = (Number(state.salario) || 0) + (Number(state.saldoAcumulado) || 0) - totalConcluido;
 
         return {
@@ -823,7 +820,6 @@
       function updateUI() {
         const totals = getTotals();
 
-        // O Salário Base reflete exatamente o valor definido pelo usuário sem ser somado na exibição principal
         document.getElementById('salarioValor').textContent = formatCurrency(state.salario || 0);
         document.getElementById('saldoValor').textContent = formatCurrency(totals.saldoAtual);
         document.getElementById('contasTotalTopo').textContent = formatCurrency(totals.totalContasPendentes);
@@ -886,7 +882,7 @@
                   <span>↗</span> ${formatCurrency(entry.saldoFinal)}
                 </div>
                 <button class="btn-delete" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
             </div>
@@ -901,7 +897,6 @@
         });
       }
 
-      // Função para ocultar/exibir itens ao clicar na seta
       window.toggleMonth = function(index) {
         const body = document.getElementById(`body-${index}`);
         const arrow = document.getElementById(`arrow-${index}`);
@@ -914,15 +909,24 @@
         }
       };
 
+      // EXCLUIR HISTÓRICO E REMOVER O VALOR SOMADO AO SALDO ATUAL
       window.deleteHistoryEntry = function(event, index) {
         event.stopPropagation();
         const history = loadHistory();
+        
+        // Obtém o registro antes de apagar para descontar o saldo
+        const removedEntry = history[index];
+        if (removedEntry && removedEntry.saldoFinal) {
+          state.saldoAcumulado = Math.max(0, (state.saldoAcumulado || 0) - Number(removedEntry.saldoFinal));
+          saveState();
+        }
+
         history.splice(index, 1);
         saveHistory(history);
         renderHistory();
+        updateUI();
       };
 
-      // SALVAR MÊS (Virada de mês)
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
         
@@ -964,10 +968,8 @@
         history.unshift(newEntry);
         saveHistory(history);
 
-        // Somente na virada de mês (ao salvar) o saldo restante é acumulado para somar com o salário no próximo mês
         state.saldoAcumulado = saldoRestanteDoCiclo;
 
-        // Limpa a tela principal zerando apenas os itens que foram concluídos
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
@@ -1048,7 +1050,7 @@
 
         if (modalMode === 'salario') {
           if (valor < 0) return;
-          state.salario = valor; // Salário mantido fixo até edição explícita
+          state.salario = valor;
         } else if (modalMode === 'item' && modalCategory) {
           const descricao = document.getElementById('inputDescricao').value.trim() || 'Sem descrição';
           if (valor <= 0) return;
