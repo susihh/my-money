@@ -31,7 +31,9 @@
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -95,6 +97,8 @@
       padding: 1.5rem;
       position: relative;
       z-index: 10;
+      flex: 1;
+      width: 100%;
     }
 
     .page-section {
@@ -528,6 +532,16 @@
       cursor: pointer;
     }
 
+    /* ESTILO DO RODAPÉ */
+    .app-footer {
+      background: var(--primary);
+      color: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      margin-top: 2rem;
+    }
+
     @media (max-width: 768px) {
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
       .categories-grid { grid-template-columns: 1fr; }
@@ -664,6 +678,11 @@
     </main>
   </div>
 
+  <!-- RODAPÉ PEQUENO DA APLICAÇÃO -->
+  <footer class="app-footer">
+    <p>&copy; 2026 Gestão Financeira. Todos os direitos reservados.</p>
+  </footer>
+
   <!-- Modal Global -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
@@ -781,7 +800,6 @@
 
         const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
         
-        // Saldo Atual calcula apenas o mês vigente: Salário Base Fixo - Gastos Concluídos Atuais
         const saldoAtual = (Number(state.salario) || 0) - totalConcluido;
 
         return {
@@ -917,7 +935,6 @@
         renderHistory();
       };
 
-      // MUDANÇA DE MÊS: Salva o mês atual e injeta a sobra no Salário Base do próximo ciclo
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
         
@@ -959,12 +976,10 @@
         history.unshift(newEntry);
         saveHistory(history);
 
-        // Ao mudar de mês, a sobra do mês anterior é somada ao Salário do novo ciclo
         if (saldoRestanteDoCiclo > 0) {
           state.salario = (Number(state.salario) || 0) + saldoRestanteDoCiclo;
         }
 
-        // Limpa os itens concluídos para dar início ao novo mês
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
