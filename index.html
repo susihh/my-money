@@ -695,7 +695,6 @@
 
       const DEFAULT_STATE = {
         salario: 0,
-        saldoAcumulado: 0,
         contas: [],
         compras: [],
         devolucoes: [],
@@ -782,7 +781,8 @@
 
         const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
         
-        const saldoAtual = (Number(state.salario) || 0) + (Number(state.saldoAcumulado) || 0) - totalConcluido;
+        // Saldo Atual calcula apenas o mês vigente: Salário Base Fixo - Gastos Concluídos Atuais
+        const saldoAtual = (Number(state.salario) || 0) - totalConcluido;
 
         return {
           totalContas, totalCompras, totalDevolucoes, totalGuardados,
@@ -882,13 +882,13 @@
                   <span>↗</span> ${formatCurrency(entry.saldoFinal)}
                 </div>
                 <button class="btn-delete" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012 2v2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
             </div>
             <div class="history-month-body" id="body-${index}">
               <div class="history-salary-info">
-                <span>💳 Salário/Recursos no Momento: ${formatCurrency(entry.salario)}</span>
+                <span>💳 Salário Base do Mês: ${formatCurrency(entry.salario)}</span>
               </div>
               ${itemsHtml || '<p style="color:var(--text-secondary);font-style:italic;">Nenhum item concluído neste registro.</p>'}
             </div>
@@ -909,24 +909,15 @@
         }
       };
 
-      // EXCLUIR HISTÓRICO E REMOVER O VALOR SOMADO AO SALDO ATUAL
       window.deleteHistoryEntry = function(event, index) {
         event.stopPropagation();
         const history = loadHistory();
-        
-        // Obtém o registro antes de apagar para descontar o saldo
-        const removedEntry = history[index];
-        if (removedEntry && removedEntry.saldoFinal) {
-          state.saldoAcumulado = Math.max(0, (state.saldoAcumulado || 0) - Number(removedEntry.saldoFinal));
-          saveState();
-        }
-
         history.splice(index, 1);
         saveHistory(history);
         renderHistory();
-        updateUI();
       };
 
+      // MUDANÇA DE MÊS: Salva o mês atual e injeta a sobra no Salário Base do próximo ciclo
       document.getElementById('btnSalvarMes').addEventListener('click', () => {
         const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
         
@@ -961,15 +952,19 @@
         const newEntry = {
           id: Date.now(),
           mesAno,
-          salario: (state.salario || 0) + (state.saldoAcumulado || 0),
+          salario: state.salario || 0,
           saldoFinal: saldoRestanteDoCiclo,
           items: itensConcluidos
         };
         history.unshift(newEntry);
         saveHistory(history);
 
-        state.saldoAcumulado = saldoRestanteDoCiclo;
+        // Ao mudar de mês, a sobra do mês anterior é somada ao Salário do novo ciclo
+        if (saldoRestanteDoCiclo > 0) {
+          state.salario = (Number(state.salario) || 0) + saldoRestanteDoCiclo;
+        }
 
+        // Limpa os itens concluídos para dar início ao novo mês
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
