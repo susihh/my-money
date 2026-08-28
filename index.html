@@ -768,7 +768,6 @@
         return div.innerHTML;
       }
 
-      // Calcula qual é o dia útil numérico do mês atual
       function getDiaUtilAtual() {
         const hoje = new Date();
         const ano = hoje.getFullYear();
@@ -779,14 +778,13 @@
         for (let d = 1; d <= diaHoje; d++) {
           const dataAux = new Date(ano, mes, d);
           const diaSemana = dataAux.getDay();
-          if (diaSemana !== 0 && diaSemana !== 6) { // Ignora Sábado (6) e Domingo (0)
+          if (diaSemana !== 0 && diaSemana !== 6) {
             diasUteisContados++;
           }
         }
         return diasUteisContados;
       }
 
-      // Executa a transição do mês quando chega o 5º dia útil
       function verificarEProcessarViradaDeMes() {
         const hoje = new Date();
         const chaveMesAnoAtual = `${hoje.getFullYear()}-${hoje.getMonth() + 1}`;
@@ -799,11 +797,8 @@
 
       function executarViradaDeMes(chaveMesAnoAtual) {
         const totals = getTotals();
-        
-        // Assegura o cálculo da sobra
         const sobraAtual = totals.saldoAtual;
 
-        // Grava no Histórico
         const filterConcluidos = arr => JSON.parse(JSON.stringify(arr.filter(item => item.concluido)));
         const itensConcluidos = {
           contas: filterConcluidos(state.contas),
@@ -827,11 +822,9 @@
         });
         saveHistory(history);
 
-        // Atualiza a sobra para o novo ciclo e marca o mês como processado
         state.sobraMesAnterior = Math.max(0, sobraAtual);
         state.ultimoMesProcessado = chaveMesAnoAtual;
 
-        // Limpa os lançamentos concluídos para o novo mês
         state.contas = state.contas.filter(item => !item.concluido);
         state.compras = state.compras.filter(item => !item.concluido);
         state.devolucoes = state.devolucoes.filter(item => !item.concluido);
@@ -855,7 +848,6 @@
 
         const totalConcluido = sumConcluidos(state.contas) + sumConcluidos(state.compras) + sumConcluidos(state.devolucoes) + sumConcluidos(state.guardados);
 
-        // O saldo disponível considera Salário Base + Sobra que acumulou do mês passado
         const receitaDisponivel = (Number(state.salarioBase) || 0) + (Number(state.sobraMesAnterior) || 0);
         const saldoAtual = receitaDisponivel - totalConcluido;
 
@@ -958,7 +950,7 @@
                   <span>↗</span> ${formatCurrency(entry.saldoFinal)}
                 </div>
                 <button class="btn-delete" onclick="deleteHistoryEntry(event, ${index})" title="Excluir Registro">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
             </div>
@@ -985,11 +977,23 @@
         }
       };
 
+      // Exclui o item do histórico e reinicia automaticamente os cálculos da página principal
       window.deleteHistoryEntry = function(event, index) {
         event.stopPropagation();
         const history = loadHistory();
         history.splice(index, 1);
         saveHistory(history);
+
+        // Recalcula o estado para a página principal reiniciar os valores do mês
+        if (history.length > 0) {
+          state.sobraMesAnterior = history[0].saldoFinal || 0;
+        } else {
+          state.sobraMesAnterior = 0;
+          state.ultimoMesProcessado = null;
+        }
+
+        saveState();
+        updateUI();
         renderHistory();
       };
 
