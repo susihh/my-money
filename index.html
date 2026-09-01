@@ -8,16 +8,16 @@
     :root {
       --primary: #6b21a8;
       --primary-light: #7e22ce;
-      --primary-bg: #f3e8ff;
-      --bg: #f3e8ff;
+      --primary-bg: #e9d5ff;
+      --bg: #d8b4fe; /* Lilás mais escuro no fundo geral */
       --card-bg: #ffffff;
       --text: #1e1b4b;
       --text-secondary: #6b7280;
-      --border: #f3f4f6;
+      --border: #e9d5ff;
       --danger: #ef4444;
       --success: #16a34a;
       --radius: 24px;
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
     }
 
     * {
@@ -36,11 +36,34 @@
       min-height: 100vh;
     }
 
-    header {
-      background: var(--primary);
+    /* ANIMAÇÃO DE LUZ PASSANTE */
+    @keyframes moveLight {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    /* EFEITO DE LUZ NOS CABEÇALHOS E RODAPÉ */
+    header, .app-footer {
+      background: linear-gradient(
+        110deg,
+        #6b21a8 0%,
+        #6b21a8 40%,
+        #a855f7 50%,
+        #6b21a8 60%,
+        #6b21a8 100%
+      );
+      background-size: 200% 100%;
+      animation: moveLight 6s infinite linear;
       color: white;
-      padding: 2.5rem 0 5rem 0;
       position: relative;
+    }
+
+    header {
+      padding: 2.5rem 0 5rem 0;
       z-index: 1;
     }
 
@@ -532,14 +555,17 @@
       cursor: pointer;
     }
 
-    /* ESTILO DO RODAPÉ */
+    /* ESTILO DO RODAPÉ COM LUZ ANIMADA */
     .app-footer {
-      background: var(--primary);
-      color: rgba(255, 255, 255, 0.85);
       text-align: center;
-      padding: 0.75rem 1rem;
-      font-size: 0.8rem;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
       margin-top: 2rem;
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .app-footer p {
+      opacity: 0.9;
     }
 
     @media (max-width: 768px) {
@@ -678,7 +704,7 @@
     </main>
   </div>
 
-  <!-- RODAPÉ PEQUENO DA APLICAÇÃO -->
+  <!-- RODAPÉ DA APLICAÇÃO -->
   <footer class="app-footer">
     <p>&copy; 2026 Gestão Financeira. Todos os direitos reservados.</p>
   </footer>
