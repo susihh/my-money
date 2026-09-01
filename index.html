@@ -9,7 +9,7 @@
       --primary: #7e22ce;
       --primary-light: #9333ea;
       --primary-bg: #e9d5ff;
-      --bg: #d8b4fe;
+      --bg: #f3f4f6; /* Fundo original preservado */
       --card-bg: #ffffff;
       --text: #1e1b4b;
       --text-secondary: #6b7280;
@@ -17,7 +17,12 @@
       --danger: #ef4444;
       --success: #16a34a;
       --radius: 24px;
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+
+      /* Tom roxo bem escuro com rosa + brilho para Cabeçalhos, Rodapé e Botões */
+      --dark-purple-pink-grad: linear-gradient(135deg, #18072b 0%, #3b0764 50%, #831843 100%);
+      --dark-purple-pink-glow: 0 4px 15px rgba(131, 24, 67, 0.4), 0 0 12px rgba(59, 7, 100, 0.3);
+      --dark-purple-pink-hover: linear-gradient(135deg, #230a3e 0%, #581c87 50%, #9f1239 100%);
     }
 
     * {
@@ -36,9 +41,10 @@
       min-height: 100vh;
     }
 
-    /* CABEÇALHOS E RODAPÉ BRILHANTES (SEM MOVIMENTO) */
+    /* CABEÇALHOS E RODAPÉ COM O NOVO TOM ESCURO, ROSA E BRILHANTE */
     header, .app-footer {
-      background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
+      background: var(--dark-purple-pink-grad);
+      box-shadow: var(--dark-purple-pink-glow);
       color: white;
       position: relative;
     }
@@ -78,7 +84,7 @@
     }
 
     .btn-icon-circle {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
       color: white;
       border: none;
       width: 42px;
@@ -92,7 +98,7 @@
     }
 
     .btn-icon-circle:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .container {
@@ -174,9 +180,9 @@
     }
 
     .btn-primary {
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.2);
       color: white;
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       padding: 0.6rem 1.2rem;
       border-radius: 12px;
       font-weight: 600;
@@ -187,11 +193,12 @@
     }
 
     .btn-primary:hover {
-      background: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.3);
     }
 
+    /* BOTÕES ADICIONAR (+): ROXO ESCURO COM ROSA E BRILHO */
     .btn-add {
-      background: var(--primary-light);
+      background: var(--dark-purple-pink-grad);
       color: white;
       border: none;
       padding: 0.5rem 1rem;
@@ -199,25 +206,37 @@
       font-weight: 600;
       font-size: 0.85rem;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: var(--dark-purple-pink-glow);
+      transition: all 0.2s;
     }
 
     .btn-add:hover {
-      background: var(--primary);
+      background: var(--dark-purple-pink-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(131, 24, 67, 0.5), 0 0 14px rgba(59, 7, 100, 0.4);
     }
 
-    .btn-modal-save {
-      background: var(--primary);
+    /* BOTÕES DE SALVAR: ROXO ESCURO COM ROSA E BRILHO */
+    .btn-modal-save, .btn-save-purple {
+      background: var(--dark-purple-pink-grad);
       color: white;
       border: none;
       padding: 0.6rem 1.2rem;
-      border-radius: 8px;
+      border-radius: 12px;
       font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--dark-purple-pink-glow);
+      transition: all 0.2s;
     }
 
-    .btn-modal-save:hover {
-      background: var(--primary-light);
+    .btn-modal-save:hover, .btn-save-purple:hover {
+      background: var(--dark-purple-pink-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(131, 24, 67, 0.5), 0 0 14px rgba(59, 7, 100, 0.4);
     }
 
     .item-list {
@@ -302,7 +321,7 @@
 
     .history-full-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.15);
     }
 
     .history-full-card-title {
@@ -319,7 +338,7 @@
     }
 
     .history-full-card:hover .history-full-card-arrow {
-      color: var(--primary);
+      color: #831843;
     }
 
     .history-card-header {
@@ -336,7 +355,7 @@
     }
 
     .history-icon-badge {
-      background: var(--primary-light);
+      background: var(--dark-purple-pink-grad);
       color: white;
       width: 40px;
       height: 40px;
@@ -344,30 +363,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: var(--dark-purple-pink-glow);
     }
 
     .history-subtitle {
       color: #9ca3af;
       font-size: 0.9rem;
       margin-bottom: 1.5rem;
-    }
-
-    .btn-save-purple {
-      background: var(--primary-light);
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-save-purple:hover {
-      background: var(--primary);
     }
 
     .history-month-card {
@@ -470,7 +472,7 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -536,13 +538,12 @@
       cursor: pointer;
     }
 
-    /* RODAPÉ */
+    /* RODAPÉ DA APLICAÇÃO */
     .app-footer {
       text-align: center;
       padding: 0.85rem 1rem;
       font-size: 0.85rem;
       margin-top: 2rem;
-      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
     }
 
     .app-footer p {
